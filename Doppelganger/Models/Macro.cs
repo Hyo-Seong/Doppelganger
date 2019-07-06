@@ -37,7 +37,7 @@ namespace Doppelganger.Models
             set => SetProperty(ref _runningTime, value);
         }
 
-        private List<InputValue> _inputValues;
+        private List<InputValue> _inputValues = new List<InputValue>();
         public List<InputValue> InputValues
         {
             get => _inputValues;

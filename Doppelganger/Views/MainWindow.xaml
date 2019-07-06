@@ -5,8 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Doppelganger"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Doppelganger" Height="450" Width="800">
     <Grid>
-        
+        <StackPanel>
+            <Button Content="Start Recording" Click="Button_Click"/>
+            <Button Content="Start Recording" Click="Button_Click_1"/>
+        </StackPanel>
     </Grid>
 </Window>

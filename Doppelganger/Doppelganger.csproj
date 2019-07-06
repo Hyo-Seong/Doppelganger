@@ -59,6 +59,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\InputValue.cs" />
+    <Compile Include="Models\KeyboardInput.cs" />
+    <Compile Include="Models\Macro.cs" />
     <Compile Include="Util\CustomKeyEventArgs.cs" />
     <Compile Include="Util\CustomKeyPressEventArgs.cs" />
     <Compile Include="Util\CustomMouseEventArgs.cs" />
@@ -106,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controls\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

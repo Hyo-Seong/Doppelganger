@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Doppelganger.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,8 +17,8 @@ namespace Doppelganger.Models
             set => SetProperty(ref _keyStatus, value);
         }
 
-        private Key _key;
-        public Key Key
+        private Keys _key;
+        public Keys Key
         {
             get => _key;
             set => SetProperty(ref _key, value);
