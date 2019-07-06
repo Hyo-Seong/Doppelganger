@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Doppelganger.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +14,6 @@ namespace Doppelganger
     /// </summary>
     public partial class App : Application
     {
+        public static MacroViewModel macroViewModel = new MacroViewModel();
     }
 }

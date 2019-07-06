@@ -1,0 +1,39 @@
+﻿<Window x:Class="Doppelganger.Views.Startup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ctrl="clr-namespace:Doppelganger.Controls"
+        xmlns:local="clr-namespace:Doppelganger.Views"
+        mc:Ignorable="d"
+        Title="Startup" Height="500" Width="700">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <ListView FontSize="20" ItemsSource="{Binding Items}" BorderBrush="Transparent">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ctrl:MacroListViewItem/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <!--<ListView x:Name="aaa" Padding="10" ItemsSource="{Binding Itemss}">
+                <DataTemplate>
+                    <Grid>
+                        <TextBlock Text="{Binding Name}"/>
+                    </Grid>
+                    --><!--<ctrl:MacroListViewItem/>--><!--
+                </DataTemplate>
+            </ListView>-->
+        </Grid>
+        <Grid Grid.Column="1">
+            <StackPanel Margin="10">
+                <Button Content="불러오기" Margin="5" Click="Button_Click"/>
+                <Button Content="새로 만들기" Margin="5" Command="{Binding StartRecordingCommand}"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
