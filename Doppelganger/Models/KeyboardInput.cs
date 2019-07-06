@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace Doppelganger.Models
 {
-    public class KeyboardInput : InputValue, ICloneable, IInput
+    public class KeyboardInput : InputValue, ICloneable
     {
         private KeyStatus _keyStatus;
         public KeyStatus KeyStatus
