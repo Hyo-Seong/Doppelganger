@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Doppelganger", "Doppelganger\Doppelganger.csproj", "{F8C6A3CA-43FB-4535-B3D9-14F1FD95B28C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F8C6A3CA-43FB-4535-B3D9-14F1FD95B28C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8C6A3CA-43FB-4535-B3D9-14F1FD95B28C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8C6A3CA-43FB-4535-B3D9-14F1FD95B28C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8C6A3CA-43FB-4535-B3D9-14F1FD95B28C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9A09B8DC-4A8B-4505-9325-C7E6766D345E}
+	EndGlobalSection
+EndGlobal
