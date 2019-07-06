@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Doppelganger.Models
 {
-    public class InputValue : BindableBase, ICloneable
+    public class InputValue : BindableBase, IInput
     {
         private InputType _inputType;
         public InputType InputType
@@ -23,18 +23,7 @@ namespace Doppelganger.Models
             set => SetProperty(ref _millis, value);
         }
 
-        public object Clone()
-        {
-            return new InputValue
-            {
-                InputType = this.InputType,
-                Millis = this.Millis
-            };
-        }
     }
 
-    public enum InputType
-    {
-        Keyboard, Mouse
-    }
+
 }

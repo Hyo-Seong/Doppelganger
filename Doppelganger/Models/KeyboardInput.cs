@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace Doppelganger.Models
 {
-    public class KeyboardInput : InputValue
+    public class KeyboardInput : InputValue, ICloneable, IInput
     {
         private KeyStatus _keyStatus;
         public KeyStatus KeyStatus
@@ -22,6 +22,17 @@ namespace Doppelganger.Models
         {
             get => _key;
             set => SetProperty(ref _key, value);
+        }
+
+        public object Clone()
+        {
+            return new KeyboardInput
+            {
+                InputType = this.InputType,
+                Key = this.Key,
+                KeyStatus = this.KeyStatus,
+                Millis = this.Millis
+            };
         }
 
 

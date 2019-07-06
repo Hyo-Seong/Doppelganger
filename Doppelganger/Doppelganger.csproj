@@ -62,6 +62,7 @@
       <DependentUpon>MacroListViewItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\InputValue.cs" />
+    <Compile Include="Models\ITemp.cs" />
     <Compile Include="Models\KeyboardInput.cs" />
     <Compile Include="Models\Macro.cs" />
     <Compile Include="Util\CustomKeyEventArgs.cs" />
