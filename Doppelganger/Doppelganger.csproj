@@ -71,6 +71,9 @@
     <Compile Include="Util\Keys.cs" />
     <Compile Include="Util\UserActivityHook.cs" />
     <Compile Include="ViewModels\MacroViewModel.cs" />
+    <Compile Include="Views\RecordManager.xaml.cs">
+      <DependentUpon>RecordManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Startup.xaml.cs">
       <DependentUpon>Startup.xaml</DependentUpon>
     </Compile>
@@ -79,6 +82,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Controls\MacroListViewItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RecordManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

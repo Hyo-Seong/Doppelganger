@@ -16,8 +16,8 @@ namespace Doppelganger.Models
             set => SetProperty(ref _inputType, value);
         }
 
-        private int _millis;
-        public int Millis
+        private long _millis;
+        public long Millis
         {
             get => _millis;
             set => SetProperty(ref _millis, value);
@@ -25,5 +25,8 @@ namespace Doppelganger.Models
 
     }
 
-
+    public enum InputType
+    {
+        Keyboard, Mouse
+    }
 }

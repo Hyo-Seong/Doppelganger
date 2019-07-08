@@ -799,13 +799,11 @@ namespace Doppelganger.Util
         {
             //Indicates if any of underlaing events set e.Handled flag
             bool handled = false;
-
             //If was Ok and someone listens to events
             if ((nCode >= 0) && (KeyDown != null || KeyUp != null || KeyPress != null))
             {
                 //Read structure KeyboardHookStruct at lParam
                 var myKeyboardHookStruct = (KeyboardHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardHookStruct));
-                
                 if (KeyDown != null && (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN))
                 {
                     #region Raise KeyDown

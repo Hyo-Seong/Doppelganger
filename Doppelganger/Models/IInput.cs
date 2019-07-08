@@ -10,8 +10,5 @@ namespace Doppelganger.Models
     {
     }
 
-    public enum InputType
-    {
-        Keyboard, Mouse
-    }
+
 }

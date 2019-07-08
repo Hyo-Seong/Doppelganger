@@ -5,16 +5,24 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Doppelganger.ViewModels
 {
     public class MacroViewModel : BindableBase
     {
+        [DllImport("user32.dll")]
+        static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+
         #region 
         private UserActivityHook _hook;
+
+        private Stopwatch stopwatch = new Stopwatch();
 
         private ObservableCollection<Macro> _items;
         public ObservableCollection<Macro> Items
@@ -30,13 +38,15 @@ namespace Doppelganger.ViewModels
 
         void _hook_KeyDown(object sender, CustomKeyEventArgs e)
         {
+            stopwatch.Stop();
             macro.InputValues.Add(new KeyboardInput
             {
                 InputType = InputType.Keyboard,
                 Key = e.Key,
                 KeyStatus = KeyStatus.Down,
-                Millis = DateTime.Now.Millisecond
+                Millis = stopwatch.ElapsedMilliseconds
             });
+            stopwatch.Restart();
         }
 
         public MacroViewModel()
@@ -57,13 +67,36 @@ namespace Doppelganger.ViewModels
                     Name = "Temp1"
                 };
                 _hook.KeyDown += _hook_KeyDown;
+                stopwatch.Start();
             }
             else
             {
                 _hook.KeyDown -= _hook_KeyDown;
+                stopwatch.Stop();
                 Items.Add((Macro)macro.Clone());
             }
             stop = !stop;
+        }
+
+        public void StartMacro(List<InputValue> inputValues)
+        {
+            if(inputValues != null && inputValues.Count == 0)
+            {
+                inputValues.ForEach(x =>
+                {
+                    x.InputType == InputType.Keyboard ? PressKey();
+                    PressKey()
+                    Thread.Sleep((int)x.Millis);
+                });
+            }
+        }
+
+        void PressKey(int keyCode)
+        {
+            const int KEYEVENTF_EXTENDEDKEY = 0x1;
+            const int KEYEVENTF_KEYUP = 0x2;
+            keybd_event(byte.Parse(keyCode.ToString()), 0x45, KEYEVENTF_EXTENDEDKEY, UIntPtr.Zero);
+            keybd_event(byte.Parse(keyCode.ToString()), 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         public bool LoadMacros()

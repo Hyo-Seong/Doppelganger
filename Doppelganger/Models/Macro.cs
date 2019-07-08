@@ -59,6 +59,8 @@ namespace Doppelganger.Models
                 if(((InputValue)x).InputType == InputType.Keyboard)
                 {
                     macro.InputValues.Add((KeyboardInput)((KeyboardInput)x).Clone());
+                } else if(((InputValue)x).InputType == InputType.Mouse){
+
                 }
             });
 
