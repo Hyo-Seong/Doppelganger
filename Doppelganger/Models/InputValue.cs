@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using Doppelganger.Util;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Doppelganger.Models
 {
-    public class InputValue : BindableBase, IInput
+    public class InputValue : BindableBase
     {
         private InputType _inputType;
         public InputType InputType
@@ -23,6 +24,36 @@ namespace Doppelganger.Models
             set => SetProperty(ref _millis, value);
         }
 
+        private KeyStatus _keyStatus;
+        public KeyStatus KeyStatus
+        {
+            get => _keyStatus;
+            set => SetProperty(ref _keyStatus, value);
+        }
+
+        private Keys _key;
+        public Keys Key
+        {
+            get => _key;
+            set => SetProperty(ref _key, value);
+        }
+
+        public object Clone()
+        {
+            return new InputValue
+            {
+                InputType = this.InputType,
+                Key = this.Key,
+                KeyStatus = this.KeyStatus,
+                Millis = this.Millis
+            };
+        }
+
+    }
+
+    public enum KeyStatus
+    {
+        Down, Up
     }
 
     public enum InputType

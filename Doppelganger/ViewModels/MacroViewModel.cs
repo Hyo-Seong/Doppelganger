@@ -39,7 +39,7 @@ namespace Doppelganger.ViewModels
         void _hook_KeyDown(object sender, CustomKeyEventArgs e)
         {
             stopwatch.Stop();
-            macro.InputValues.Add(new KeyboardInput
+            macro.InputValues.Add(new InputValue
             {
                 InputType = InputType.Keyboard,
                 Key = e.Key,
@@ -73,6 +73,13 @@ namespace Doppelganger.ViewModels
             {
                 _hook.KeyDown -= _hook_KeyDown;
                 stopwatch.Stop();
+                macro.InputValues.Add(new InputValue
+                {
+                    InputType = InputType.Keyboard,
+                    Key = Keys.None,
+                    KeyStatus = KeyStatus.Down,
+                    Millis = stopwatch.ElapsedMilliseconds
+                });
                 Items.Add((Macro)macro.Clone());
             }
             stop = !stop;
@@ -80,14 +87,9 @@ namespace Doppelganger.ViewModels
 
         public void StartMacro(List<InputValue> inputValues)
         {
-            if(inputValues != null && inputValues.Count == 0)
+            if(inputValues != null && inputValues.Count != 0)
             {
-                inputValues.ForEach(x =>
-                {
-                    x.InputType == InputType.Keyboard ? PressKey();
-                    PressKey()
-                    Thread.Sleep((int)x.Millis);
-                });
+                inputValues.ForEach(x => PressKey((int)x.Key));
             }
         }
 
@@ -95,6 +97,7 @@ namespace Doppelganger.ViewModels
         {
             const int KEYEVENTF_EXTENDEDKEY = 0x1;
             const int KEYEVENTF_KEYUP = 0x2;
+            Console.WriteLine(byte.Parse(keyCode.ToString()));
             keybd_event(byte.Parse(keyCode.ToString()), 0x45, KEYEVENTF_EXTENDEDKEY, UIntPtr.Zero);
             keybd_event(byte.Parse(keyCode.ToString()), 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
