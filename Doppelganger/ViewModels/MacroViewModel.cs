@@ -36,14 +36,14 @@ namespace Doppelganger.ViewModels
 
         public DelegateCommand StartRecordingCommand { get; private set; }
 
-        void _hook_KeyDown(object sender, CustomKeyEventArgs e)
+        void _hook_KeyEvent(object sender, CustomKeyEventArgs e)
         {
             stopwatch.Stop();
             macro.InputValues.Add(new InputValue
             {
                 InputType = InputType.Keyboard,
                 Key = e.Key,
-                KeyStatus = KeyStatus.Down,
+                KeyStatus = e.KeyStatus,
                 Millis = stopwatch.ElapsedMilliseconds
             });
             stopwatch.Restart();
@@ -66,12 +66,14 @@ namespace Doppelganger.ViewModels
                 {
                     Name = "Temp1"
                 };
-                _hook.KeyDown += _hook_KeyDown;
+                _hook.KeyDown += _hook_KeyEvent;
+                _hook.KeyUp += _hook_KeyEvent;
                 stopwatch.Start();
             }
             else
             {
-                _hook.KeyDown -= _hook_KeyDown;
+                _hook.KeyDown -= _hook_KeyEvent;
+                _hook.KeyUp -= _hook_KeyEvent;
                 stopwatch.Stop();
                 macro.InputValues.Add(new InputValue
                 {
@@ -81,25 +83,27 @@ namespace Doppelganger.ViewModels
                     Millis = stopwatch.ElapsedMilliseconds
                 });
                 Items.Add((Macro)macro.Clone());
+                macro = null;
             }
             stop = !stop;
         }
 
-        public void StartMacro(List<InputValue> inputValues)
+        public void ExcuteMacro(List<InputValue> inputValues)
         {
             if(inputValues != null && inputValues.Count != 0)
             {
-                inputValues.ForEach(x => PressKey((int)x.Key));
+                inputValues.ForEach(PressKey);
             }
         }
 
-        void PressKey(int keyCode)
+        void PressKey(InputValue input)
         {
-            const int KEYEVENTF_EXTENDEDKEY = 0x1;
-            const int KEYEVENTF_KEYUP = 0x2;
-            Console.WriteLine(byte.Parse(keyCode.ToString()));
-            keybd_event(byte.Parse(keyCode.ToString()), 0x45, KEYEVENTF_EXTENDEDKEY, UIntPtr.Zero);
-            keybd_event(byte.Parse(keyCode.ToString()), 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Thread.Sleep((int)input.Millis);
+            Console.WriteLine(input.Key + " : " + input.KeyStatus.ToString());
+            const uint KEYEVENTF_EXTENDEDKEY = 0x1;
+            const uint KEYEVENTF_KEYUP = 0x2;
+            uint dwFlags = input.KeyStatus == KeyStatus.Down ? KEYEVENTF_EXTENDEDKEY : KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP;
+            keybd_event(byte.Parse(((int)input.Key).ToString()), 0x45, dwFlags, UIntPtr.Zero);
         }
 
         public bool LoadMacros()

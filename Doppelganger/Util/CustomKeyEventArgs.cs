@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Doppelganger.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,9 +14,12 @@ namespace Doppelganger.Util
 
         public bool Handled { get; private set; }
 
-        public CustomKeyEventArgs(Keys key)
+        public KeyStatus KeyStatus { get; private set; }
+
+        public CustomKeyEventArgs(Keys key, KeyStatus keyStatus)
         {
             Key = key;
+            KeyStatus = keyStatus;
         }
     }
 }

@@ -45,7 +45,7 @@ namespace Doppelganger.Views
 
         private void ListView_Selected(object sender, SelectionChangedEventArgs e)
         {
-            App.macroViewModel.StartMacro(((Macro)aa.SelectedItem).InputValues.ToList());
+            App.macroViewModel.ExcuteMacro(((Macro)aa.SelectedItem).InputValues.ToList());
         }
     }
 }

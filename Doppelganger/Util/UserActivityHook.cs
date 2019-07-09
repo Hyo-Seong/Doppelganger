@@ -1,3 +1,4 @@
+using Doppelganger.Models;
 using System;
 using System.ComponentModel;
 using System.Reflection;
@@ -809,7 +810,7 @@ namespace Doppelganger.Util
                     #region Raise KeyDown
 
                     var keyData = (Keys)myKeyboardHookStruct.vkCode;
-                    var e = new CustomKeyEventArgs(keyData);
+                    var e = new CustomKeyEventArgs(keyData, KeyStatus.Down);
                     KeyDown?.Invoke(this, e);
                     
                     handled = handled || e.Handled;
@@ -848,7 +849,7 @@ namespace Doppelganger.Util
                     #region Raise KeyUp
 
                     var keyData = (Keys)myKeyboardHookStruct.vkCode;
-                    var e = new CustomKeyEventArgs(keyData);
+                    var e = new CustomKeyEventArgs(keyData, KeyStatus.Up);
                     KeyUp?.Invoke(this, e);
 
                     handled = handled || e.Handled;

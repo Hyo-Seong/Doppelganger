@@ -53,7 +53,8 @@ namespace Doppelganger.Models
 
     public enum KeyStatus
     {
-        Down, Up
+        Down = 0x1,
+        Up = 0x2
     }
 
     public enum InputType
