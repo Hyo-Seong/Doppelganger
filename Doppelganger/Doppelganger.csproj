@@ -67,6 +67,7 @@
     <Compile Include="Util\CustomKeyPressEventArgs.cs" />
     <Compile Include="Util\CustomMouseEventArgs.cs" />
     <Compile Include="Util\Keys.cs" />
+    <Compile Include="Util\MouseHook.cs" />
     <Compile Include="Util\UserActivityHook.cs" />
     <Compile Include="ViewModels\MacroViewModel.cs" />
     <Compile Include="Views\RecordManager.xaml.cs">
@@ -119,6 +120,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

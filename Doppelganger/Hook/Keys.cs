@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Doppelganger.Util
+namespace Doppelganger.Hook
 {
     /// <summary>
     /// Specifies key codes and modifiers.

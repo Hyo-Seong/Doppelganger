@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 //https://github.com/NickeManarin/ScreenToGif/tree/master/Other/HookTest/Util
 //http://joelabrahamsson.com/detecting-mouse-and-keyboard-input-with-net/
-namespace Doppelganger.Util
+namespace Doppelganger.Hook
 {
     /// <summary>
     /// This class allows you to tap keyboard and mouse and / or to detect their activity even when an 

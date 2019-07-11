@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Doppelganger.Util
+namespace Doppelganger.Hook
 {
     public class CustomMouseEventArgs : EventArgs
     {

@@ -1,5 +1,5 @@
 ﻿using Doppelganger.Models;
-using Doppelganger.Util;
+using Doppelganger.Hook;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -11,15 +11,24 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static RamGecTools.MouseHook;
+using Doppelganger.Models.Input;
 
 namespace Doppelganger.ViewModels
 {
     public class MacroViewModel : BindableBase
     {
+        #region DllImport
         [DllImport("user32.dll")]
         static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+        #endregion
 
         #region 
+        private readonly uint KEYDOWN = 0x1;
+        private readonly uint KEYUP = 0x2;
+
+        RamGecTools.MouseHook mouseHook = new RamGecTools.MouseHook();
+
         private UserActivityHook _hook;
 
         private Stopwatch stopwatch = new Stopwatch();
@@ -34,14 +43,48 @@ namespace Doppelganger.ViewModels
         private Macro macro = new Macro();
         #endregion
 
-        public DelegateCommand StartRecordingCommand { get; private set; }
+        #region Command
+        public DelegateCommand StartKeyboardRecordingCommand { get; private set; }
+        public DelegateCommand StartMouseRecordingCommand { get; private set; }
 
-        void _hook_KeyEvent(object sender, CustomKeyEventArgs e)
+
+        #endregion
+
+        public MacroViewModel()
+        {
+            _hook = new UserActivityHook(true, true);
+            Items = new ObservableCollection<Macro>();
+            StartKeyboardRecordingCommand = new DelegateCommand(StartKeyboardHooking);
+            StartMouseRecordingCommand = new DelegateCommand(StartMouseHooking);
+        }
+
+        private bool flag2 = true;
+
+        private void StartMouseHooking()
+        {
+            if (flag2)
+            {
+                mouseHook.MouseHookReceived += new RamGecTools.MouseHook.MouseHookCallback(mouseHook_MouseWheel);
+
+                mouseHook.Install();
+            }
+            else
+            {
+                mouseHook.Uninstall();
+            }
+            flag2 = !flag2;
+        }
+
+        void mouseHook_MouseWheel(RamGecTools.MouseHook.MSLLHOOKSTRUCT mouseStruct, MouseMessages mouseMessages)
+        {
+            Console.WriteLine("dwExtraInfo : {0}\nflags : {1}\nmouseData : {2}\nx : {3}\ny : {4}\ntime : {5}\nmouseMessages : {6}", mouseStruct.dwExtraInfo, mouseStruct.flags, mouseStruct.mouseData, mouseStruct.pt.x, mouseStruct.pt.y, mouseStruct.time, mouseMessages.ToString());
+        }
+
+        private void _hook_KeyEvent(object sender, CustomKeyEventArgs e)
         {
             stopwatch.Stop();
-            macro.InputValues.Add(new InputValue
+            macro.InputValues.Add(new KeyboardInput
             {
-                InputType = InputType.Keyboard,
                 Key = e.Key,
                 KeyStatus = e.KeyStatus,
                 Millis = stopwatch.ElapsedMilliseconds
@@ -49,16 +92,9 @@ namespace Doppelganger.ViewModels
             stopwatch.Restart();
         }
 
-        public MacroViewModel()
-        {
-            _hook = new UserActivityHook(true, true);
-            Items = new ObservableCollection<Macro>();
-            StartRecordingCommand = new DelegateCommand(StartHooking);
-        }
-
         private bool stop = true;
 
-        public void StartHooking()
+        public void StartKeyboardHooking()
         {
             if (stop)
             {
@@ -75,9 +111,8 @@ namespace Doppelganger.ViewModels
                 _hook.KeyDown -= _hook_KeyEvent;
                 _hook.KeyUp -= _hook_KeyEvent;
                 stopwatch.Stop();
-                macro.InputValues.Add(new InputValue
+                macro.InputValues.Add(new KeyboardInput
                 {
-                    InputType = InputType.Keyboard,
                     Key = Keys.None,
                     KeyStatus = KeyStatus.Down,
                     Millis = stopwatch.ElapsedMilliseconds
@@ -88,7 +123,7 @@ namespace Doppelganger.ViewModels
             stop = !stop;
         }
 
-        public void ExcuteMacro(List<InputValue> inputValues)
+        public void ExcuteMacro(List<KeyboardInput> inputValues)
         {
             if(inputValues != null && inputValues.Count != 0)
             {
@@ -96,13 +131,12 @@ namespace Doppelganger.ViewModels
             }
         }
 
-        void PressKey(InputValue input)
+        void PressKey(KeyboardInput input)
         {
             Thread.Sleep((int)input.Millis);
             Console.WriteLine(input.Key + " : " + input.KeyStatus.ToString());
-            const uint KEYEVENTF_EXTENDEDKEY = 0x1;
-            const uint KEYEVENTF_KEYUP = 0x2;
-            uint dwFlags = input.KeyStatus == KeyStatus.Down ? KEYEVENTF_EXTENDEDKEY : KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP;
+
+            uint dwFlags = input.KeyStatus == KeyStatus.Down ? KEYDOWN : KEYDOWN | KEYUP;
             keybd_event(byte.Parse(((int)input.Key).ToString()), 0x45, dwFlags, UIntPtr.Zero);
         }
 

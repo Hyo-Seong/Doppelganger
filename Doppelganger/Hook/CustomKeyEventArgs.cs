@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Doppelganger.Util
+namespace Doppelganger.Hook
 {
     public class CustomKeyEventArgs : EventArgs
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Doppelganger.Util
+namespace Doppelganger.Hook
 {
     public class CustomKeyPressEventArgs : EventArgs
     {

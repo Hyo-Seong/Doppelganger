@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using Doppelganger.Models.Input;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +38,8 @@ namespace Doppelganger.Models
             set => SetProperty(ref _runningTime, value);
         }
 
-        private List<InputValue> _inputValues = new List<InputValue>();
-        public List<InputValue> InputValues
+        private List<KeyboardInput> _inputValues = new List<KeyboardInput>();
+        public List<KeyboardInput> InputValues
         {
             get => _inputValues;
             set => SetProperty(ref _inputValues, value);
@@ -56,7 +57,7 @@ namespace Doppelganger.Models
 
             InputValues.ForEach(x =>
             {
-                macro.InputValues.Add((InputValue)x.Clone());
+                macro.InputValues.Add((KeyboardInput)x.Clone());
             });
 
             return macro;

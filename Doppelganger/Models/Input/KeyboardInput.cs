@@ -1,4 +1,4 @@
-﻿using Doppelganger.Util;
+﻿using Doppelganger.Hook;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -6,17 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Doppelganger.Models
+namespace Doppelganger.Models.Input
 {
-    public class InputValue : BindableBase
+    public class KeyboardInput : BindableBase, ICloneable
     {
-        private InputType _inputType;
-        public InputType InputType
-        {
-            get => _inputType;
-            set => SetProperty(ref _inputType, value);
-        }
-
         private long _millis;
         public long Millis
         {
@@ -40,9 +33,8 @@ namespace Doppelganger.Models
 
         public object Clone()
         {
-            return new InputValue
+            return new KeyboardInput
             {
-                InputType = this.InputType,
                 Key = this.Key,
                 KeyStatus = this.KeyStatus,
                 Millis = this.Millis
@@ -55,10 +47,5 @@ namespace Doppelganger.Models
     {
         Down = 0x1,
         Up = 0x2
-    }
-
-    public enum InputType
-    {
-        Keyboard, Mouse
     }
 }
