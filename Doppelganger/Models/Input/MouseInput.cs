@@ -17,8 +17,8 @@ namespace Doppelganger.Models.Input
             set => SetProperty(ref _millis, value);
         }
 
-        private MouseMessages _mouseStatus;
-        public MouseMessages MouseStatus
+        private MouseButtons _mouseStatus;
+        public MouseButtons MouseStatus
         {
             get => _mouseStatus;
             set => SetProperty(ref _mouseStatus, value);
@@ -42,19 +42,16 @@ namespace Doppelganger.Models.Input
             };
         }
     }
-
-    public enum MouseMessages
+    public enum MouseButtons
     {
-        WM_LBUTTONDOWN = 0x0201,
-        WM_LBUTTONUP = 0x0202,
-        WM_MBUTTONDOWN = 0x0207,
-        WM_MBUTTONUP = 0x0208,
-        WM_RBUTTONDOWN = 0x0204,
-        WM_RBUTTONUP = 0x0205,
-        WM_MOUSEMOVE = 0x0200,
-        WM_MOUSEWHEEL = 0x020A,
-
-        // unused value
-        //WM_LBUTTONDBLCLK = 0x0203,
+        LeftDown = 2,
+        LeftUp = 4,
+        RightDown = 8,
+        RightUp = 16,
+        MiddleDown = 32,
+        MiddleUp = 64,
+        Wheel = 2048,
+        Absolute = 32768
     }
+
 }

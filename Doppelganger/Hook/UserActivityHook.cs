@@ -1,4 +1,5 @@
 using Doppelganger.Models;
+using Doppelganger.Models.Input;
 using System;
 using System.ComponentModel;
 using System.Reflection;
