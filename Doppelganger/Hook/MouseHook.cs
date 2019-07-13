@@ -27,6 +27,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using Doppelganger.Models.Input;
 
 namespace RamGecTools
 {   
@@ -105,9 +106,24 @@ namespace RamGecTools
             if (nCode >= 0 || MouseMessages.WM_LBUTTONDBLCLK != (MouseMessages)wParam)
             {
                 MSLLHOOKSTRUCT mSLLHOOKSTRUCT = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+                MouseInput mouseInput = new MouseInput
+                {
+                    Point = new InputManager.MouseHook.POINT
+                    {
+                        x = mSLLHOOKSTRUCT.pt.x,
+                        y = mSLLHOOKSTRUCT.pt.y
+                    },
+                    MouseStatus = ParseEnum<MouseButtons>(((MouseMessages)wParam).ToString()),
+                    Millis = 0
+                };
                 MouseHookReceived?.Invoke(mSLLHOOKSTRUCT, (MouseMessages)wParam);
             }
             return CallNextHookEx(hookID, nCode, wParam, lParam);
+        }
+
+        public T ParseEnum<T>(string value)
+        {
+            return (T)Enum.Parse(typeof(T), value, true);
         }
 
         #region WinAPI
@@ -115,15 +131,15 @@ namespace RamGecTools
 
         public enum MouseMessages
         {
-            WM_LBUTTONDOWN = 0x0201,
-            WM_LBUTTONUP = 0x0202,
-            WM_MOUSEMOVE = 0x0200,
-            WM_MOUSEWHEEL = 0x020A,
-            WM_RBUTTONDOWN = 0x0204,
-            WM_RBUTTONUP = 0x0205,
+            LeftDown = 0x0201,
+            LeftUp = 0x0202,
+            Move = 0x0200,
+            Wheel = 0x020A,
+            RightDown = 0x0204,
+            RightUp = 0x0205,
             WM_LBUTTONDBLCLK = 0x0203,
-            WM_MBUTTONDOWN = 0x0207,
-            WM_MBUTTONUP = 0x0208
+            MiddleDown = 0x0207,
+            MiddleUp = 0x0208
         }
 
 

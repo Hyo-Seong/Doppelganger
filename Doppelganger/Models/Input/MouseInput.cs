@@ -51,7 +51,8 @@ namespace Doppelganger.Models.Input
         MiddleDown = 32,
         MiddleUp = 64,
         Wheel = 2048,
-        Absolute = 32768
+        Absolute = 32768,
+        Move = 0
     }
 
 }
