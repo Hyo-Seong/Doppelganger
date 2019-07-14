@@ -10,12 +10,21 @@ namespace Doppelganger.Models.Input
 {
     public class KeyboardInput : BindableBase, ICloneable
     {
+        public KeyboardInput(Keys keys, KeyStatus keyStatus, long millis)
+        {
+            this.Key = keys;
+            this.KeyStatus = keyStatus;
+            this.Millis = millis;
+        }
+
         private long _millis;
         public long Millis
         {
             get => _millis;
             set => SetProperty(ref _millis, value);
         }
+
+        public bool Handled { get; private set; }
 
         private KeyStatus _keyStatus;
         public KeyStatus KeyStatus
@@ -37,7 +46,8 @@ namespace Doppelganger.Models.Input
             {
                 Key = this.Key,
                 KeyStatus = this.KeyStatus,
-                Millis = this.Millis
+                Millis = this.Millis,
+                Handled = this.Handled
             };
         }
 

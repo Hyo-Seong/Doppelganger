@@ -2,6 +2,7 @@ using Doppelganger.Models;
 using Doppelganger.Models.Input;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
@@ -471,6 +472,8 @@ namespace Doppelganger.Hook
 
         #region Variables
 
+        private Stopwatch stopwatch = new Stopwatch();
+
         /// <summary>
         /// Custom Mouse Event Handler, Since the WPF version it's way different from the WinForms.
         /// </summary>
@@ -483,7 +486,7 @@ namespace Doppelganger.Hook
         /// </summary>
         /// <param name="sender">Object sender.</param>
         /// <param name="e">Event Args.</param>
-        public delegate void CustomKeyEventHandler(object sender, CustomKeyEventArgs e);
+        public delegate void CustomKeyEventHandler(object sender, KeyboardInput e);
 
         /// <summary>
         /// Custom KeyPress Event Handler, Since the WPF version it's way different from the WinForms.
@@ -543,6 +546,17 @@ namespace Doppelganger.Hook
         #endregion
 
         #region Start/Stop
+
+        public void StartStopwatch()
+        {
+            stopwatch.Start();
+        }
+
+        public void StopStopwatch()
+        {
+            stopwatch.Stop();
+        }
+
 
         /// <summary>
         /// Installs both mouse and keyboard hooks and starts rasing events
@@ -811,7 +825,8 @@ namespace Doppelganger.Hook
                     #region Raise KeyDown
 
                     var keyData = (Keys)myKeyboardHookStruct.vkCode;
-                    var e = new CustomKeyEventArgs(keyData, KeyStatus.Down);
+                    var e = new KeyboardInput(keyData, KeyStatus.Down, stopwatch.ElapsedMilliseconds);
+                    stopwatch.Restart();
                     KeyDown?.Invoke(this, e);
                     
                     handled = handled || e.Handled;
@@ -819,44 +834,46 @@ namespace Doppelganger.Hook
                     #endregion
                 }
 
-                if (KeyPress != null && wParam == WM_KEYDOWN)
-                {
-                    #region Raise KeyPress
-                    
-                    bool isDownShift = ((GetKeyState(VK_SHIFT) & 0x80) == 0x80);
-                    bool isDownCapslock = (GetKeyState(VK_CAPITAL) != 0);
-
-                    var keyState = new byte[256];
-                    GetKeyboardState(keyState);
-                    var inBuffer = new byte[2];
-                    
-                    if (ToAscii(myKeyboardHookStruct.vkCode, myKeyboardHookStruct.scanCode, keyState, inBuffer, myKeyboardHookStruct.flags) == 1)
-                    {
-                        var key = (char)inBuffer[0];
-                        if ((isDownCapslock ^ isDownShift) && Char.IsLetter(key)) 
-                            key = Char.ToUpper(key);
-                        
-                        var e = new CustomKeyPressEventArgs(key);
-                        KeyPress?.Invoke(this, e);
-
-                        handled = handled || e.Handled;
-                    }
-
-                    #endregion
-                }
 
                 if (KeyUp != null && (wParam == WM_KEYUP || wParam == WM_SYSKEYUP))
                 {
                     #region Raise KeyUp
 
                     var keyData = (Keys)myKeyboardHookStruct.vkCode;
-                    var e = new CustomKeyEventArgs(keyData, KeyStatus.Up);
+                    var e = new KeyboardInput(keyData, KeyStatus.Up, stopwatch.ElapsedMilliseconds);
+                    stopwatch.Restart();
                     KeyUp?.Invoke(this, e);
 
                     handled = handled || e.Handled;
 
                     #endregion
                 }
+
+                //if (KeyPress != null && wParam == WM_KEYDOWN)
+                //{
+                //    #region Raise KeyPress
+
+                //    bool isDownShift = ((GetKeyState(VK_SHIFT) & 0x80) == 0x80);
+                //    bool isDownCapslock = (GetKeyState(VK_CAPITAL) != 0);
+
+                //    var keyState = new byte[256];
+                //    GetKeyboardState(keyState);
+                //    var inBuffer = new byte[2];
+
+                //    if (ToAscii(myKeyboardHookStruct.vkCode, myKeyboardHookStruct.scanCode, keyState, inBuffer, myKeyboardHookStruct.flags) == 1)
+                //    {
+                //        var key = (char)inBuffer[0];
+                //        if ((isDownCapslock ^ isDownShift) && Char.IsLetter(key)) 
+                //            key = Char.ToUpper(key);
+
+                //        var e = new CustomKeyPressEventArgs(key);
+                //        KeyPress?.Invoke(this, e);
+
+                //        handled = handled || e.Handled;
+                //    }
+
+                //    #endregion
+                //}
             }
 
             //If event handled in application do not handoff to other listeners

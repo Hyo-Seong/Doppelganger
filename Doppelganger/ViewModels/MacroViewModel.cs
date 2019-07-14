@@ -80,16 +80,9 @@ namespace Doppelganger.ViewModels
             Console.WriteLine("dwExtraInfo : {0}\nflags : {1}\nmouseData : {2}\nx : {3}\ny : {4}\ntime : {5}\nmouseMessages : {6}", mouseStruct.dwExtraInfo, mouseStruct.flags, mouseStruct.mouseData, mouseStruct.pt.x, mouseStruct.pt.y, mouseStruct.time, mouseMessages.ToString());
         }
 
-        private void _hook_KeyEvent(object sender, CustomKeyEventArgs e)
+        private void _hook_KeyEvent(object sender, KeyboardInput e)
         {
-            stopwatch.Stop();
-            macro.InputValues.Add(new KeyboardInput
-            {
-                Key = e.Key,
-                KeyStatus = e.KeyStatus,
-                Millis = stopwatch.ElapsedMilliseconds
-            });
-            stopwatch.Restart();
+            macro.InputValues.Add(e);
         }
 
         private bool stop = true;
@@ -102,21 +95,16 @@ namespace Doppelganger.ViewModels
                 {
                     Name = "Temp1"
                 };
+                _hook.StartStopwatch();
                 _hook.KeyDown += _hook_KeyEvent;
                 _hook.KeyUp += _hook_KeyEvent;
-                stopwatch.Start();
             }
             else
             {
+                _hook.StopStopwatch();
                 _hook.KeyDown -= _hook_KeyEvent;
                 _hook.KeyUp -= _hook_KeyEvent;
-                stopwatch.Stop();
-                macro.InputValues.Add(new KeyboardInput
-                {
-                    Key = Keys.None,
-                    KeyStatus = KeyStatus.Down,
-                    Millis = stopwatch.ElapsedMilliseconds
-                });
+                macro.InputValues.Add(new KeyboardInput(Keys.None, KeyStatus.Down, stopwatch.ElapsedMilliseconds));
                 Items.Add((Macro)macro.Clone());
                 macro = null;
             }

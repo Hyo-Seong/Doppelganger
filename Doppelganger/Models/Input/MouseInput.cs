@@ -31,7 +31,6 @@ namespace Doppelganger.Models.Input
             set => SetProperty(ref _point, value);
         }
 
-
         public object Clone()
         {
             return new MouseInput
