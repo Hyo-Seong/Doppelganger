@@ -37,7 +37,7 @@ namespace Doppelganger.Views
         private void ListView_Selected(object sender, RoutedEventArgs e)
         {
             Macro macro = aa.SelectedItem as Macro;
-            macro.InputValues.ForEach(x =>
+            macro.KeyboardInputs.ForEach(x =>
             {
                 Console.WriteLine(x.Key);
             });
@@ -45,7 +45,7 @@ namespace Doppelganger.Views
 
         private void ListView_Selected(object sender, SelectionChangedEventArgs e)
         {
-            App.macroViewModel.ExcuteMacro(((Macro)aa.SelectedItem).InputValues.ToList());
+            App.macroViewModel.ExcuteMacro(((Macro)aa.SelectedItem).KeyboardInputs.ToList());
         }
     }
 }

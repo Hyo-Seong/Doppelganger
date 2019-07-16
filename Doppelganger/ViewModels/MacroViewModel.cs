@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static RamGecTools.MouseHook;
 using Doppelganger.Models.Input;
+using RamGecTools;
 
 namespace Doppelganger.ViewModels
 {
@@ -27,9 +28,9 @@ namespace Doppelganger.ViewModels
         private readonly uint KEYDOWN = 0x1;
         private readonly uint KEYUP = 0x2;
 
-        RamGecTools.MouseHook mouseHook = new RamGecTools.MouseHook();
+        MouseHook _mouseHook = new MouseHook();
 
-        private UserActivityHook _hook;
+        private UserActivityHook _keyboardHook;
 
         private Stopwatch stopwatch = new Stopwatch();
 
@@ -52,7 +53,7 @@ namespace Doppelganger.ViewModels
 
         public MacroViewModel()
         {
-            _hook = new UserActivityHook(true, true);
+            _keyboardHook = new UserActivityHook(true, true);
             Items = new ObservableCollection<Macro>();
             StartKeyboardRecordingCommand = new DelegateCommand(StartKeyboardHooking);
             StartMouseRecordingCommand = new DelegateCommand(StartMouseHooking);
@@ -64,25 +65,25 @@ namespace Doppelganger.ViewModels
         {
             if (flag2)
             {
-                mouseHook.MouseHookReceived += new RamGecTools.MouseHook.MouseHookCallback(mouseHook_MouseWheel);
+                _mouseHook.MouseHookReceived += new MouseHookCallback(mouseHook_MouseWheel);
 
-                mouseHook.Install();
+                _mouseHook.Install();
             }
             else
             {
-                mouseHook.Uninstall();
+                _mouseHook.Uninstall();
             }
             flag2 = !flag2;
         }
 
-        void mouseHook_MouseWheel(RamGecTools.MouseHook.MSLLHOOKSTRUCT mouseStruct, MouseMessages mouseMessages)
+        void mouseHook_MouseWheel(MouseInput mouseInput)
         {
-            Console.WriteLine("dwExtraInfo : {0}\nflags : {1}\nmouseData : {2}\nx : {3}\ny : {4}\ntime : {5}\nmouseMessages : {6}", mouseStruct.dwExtraInfo, mouseStruct.flags, mouseStruct.mouseData, mouseStruct.pt.x, mouseStruct.pt.y, mouseStruct.time, mouseMessages.ToString());
+            macro.MouseInputs.Add(mouseInput);
         }
 
         private void _hook_KeyEvent(object sender, KeyboardInput e)
         {
-            macro.InputValues.Add(e);
+            macro.KeyboardInputs.Add(e);
         }
 
         private bool stop = true;
@@ -95,27 +96,33 @@ namespace Doppelganger.ViewModels
                 {
                     Name = "Temp1"
                 };
-                _hook.StartStopwatch();
-                _hook.KeyDown += _hook_KeyEvent;
-                _hook.KeyUp += _hook_KeyEvent;
+                _keyboardHook.StartStopwatch();
+                _keyboardHook.KeyDown += _hook_KeyEvent;
+                _keyboardHook.KeyUp += _hook_KeyEvent;
             }
             else
             {
-                _hook.StopStopwatch();
-                _hook.KeyDown -= _hook_KeyEvent;
-                _hook.KeyUp -= _hook_KeyEvent;
-                macro.InputValues.Add(new KeyboardInput(Keys.None, KeyStatus.Down, stopwatch.ElapsedMilliseconds));
+                _keyboardHook.StopStopwatch();
+                _keyboardHook.KeyDown -= _hook_KeyEvent;
+                _keyboardHook.KeyUp -= _hook_KeyEvent;
+
+                macro.KeyboardInputs.Add(new KeyboardInput
+                {
+                    Key = Keys.None,
+                    KeyStatus = KeyStatus.Down,
+                    Millis = stopwatch.ElapsedMilliseconds
+                });
                 Items.Add((Macro)macro.Clone());
                 macro = null;
             }
             stop = !stop;
         }
 
-        public void ExcuteMacro(List<KeyboardInput> inputValues)
+        public void ExcuteMacro(List<KeyboardInput> keyboardInputs)
         {
-            if(inputValues != null && inputValues.Count != 0)
+            if(keyboardInputs != null && keyboardInputs.Count != 0)
             {
-                inputValues.ForEach(PressKey);
+                keyboardInputs.ForEach(PressKey);
             }
         }
 

@@ -38,11 +38,18 @@ namespace Doppelganger.Models
             set => SetProperty(ref _runningTime, value);
         }
 
-        private List<KeyboardInput> _inputValues = new List<KeyboardInput>();
-        public List<KeyboardInput> InputValues
+        private List<KeyboardInput> _keyboardInputs = new List<KeyboardInput>();
+        public List<KeyboardInput> KeyboardInputs
         {
-            get => _inputValues;
-            set => SetProperty(ref _inputValues, value);
+            get => _keyboardInputs;
+            set => SetProperty(ref _keyboardInputs, value);
+        }
+
+        private List<MouseInput> _mouseInputs = new List<MouseInput>();
+        public List<MouseInput> MouseInputs
+        {
+            get => _mouseInputs;
+            set => SetProperty(ref _mouseInputs, value);
         }
 
         public object Clone()
@@ -55,9 +62,9 @@ namespace Doppelganger.Models
                 RunningTime = this.RunningTime,
             };
 
-            InputValues.ForEach(x =>
+            KeyboardInputs.ForEach(x =>
             {
-                macro.InputValues.Add((KeyboardInput)x.Clone());
+                macro.KeyboardInputs.Add((KeyboardInput)x.Clone());
             });
 
             return macro;

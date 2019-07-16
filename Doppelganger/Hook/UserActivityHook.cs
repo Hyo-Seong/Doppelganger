@@ -825,7 +825,12 @@ namespace Doppelganger.Hook
                     #region Raise KeyDown
 
                     var keyData = (Keys)myKeyboardHookStruct.vkCode;
-                    var e = new KeyboardInput(keyData, KeyStatus.Down, stopwatch.ElapsedMilliseconds);
+                    var e = new KeyboardInput
+                    {
+                        Key = keyData,
+                        KeyStatus = KeyStatus.Down,
+                        Millis = stopwatch.ElapsedMilliseconds
+                    };
                     stopwatch.Restart();
                     KeyDown?.Invoke(this, e);
                     
@@ -840,7 +845,12 @@ namespace Doppelganger.Hook
                     #region Raise KeyUp
 
                     var keyData = (Keys)myKeyboardHookStruct.vkCode;
-                    var e = new KeyboardInput(keyData, KeyStatus.Up, stopwatch.ElapsedMilliseconds);
+                    var e = new KeyboardInput
+                    {
+                        Key = keyData,
+                        KeyStatus = KeyStatus.Up,
+                        Millis = stopwatch.ElapsedMilliseconds
+                    }; ;
                     stopwatch.Restart();
                     KeyUp?.Invoke(this, e);
 
