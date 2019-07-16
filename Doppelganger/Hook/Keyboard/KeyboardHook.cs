@@ -333,22 +333,10 @@ namespace Doppelganger.Hook
         public delegate void CustomKeyEventHandler(object sender, KeyboardInput e);
 
         /// <summary>
-        /// Custom KeyUp Event Handler, Since the WPF version it's way different from the WinForms.
-        /// </summary>
-        /// <param name="sender">Object sender.</param>
-        /// <param name="e">Event Args.</param>
-        public delegate void CustomKeyUpEventHandler(object sender, CustomKeyEventArgs e);
-        //public event MouseEventHandler OnMouseActivity;
-
-        /// <summary>
         /// Occurs when the user presses a key
         /// </summary>
-        public event CustomKeyEventHandler KeyDown;
+        public event CustomKeyEventHandler KeyboardStatusChanged;
 
-        /// <summary>
-        /// Occurs when the user releases a key
-        /// </summary>
-        public event CustomKeyEventHandler KeyUp;
         /// <summary>
         /// Stores the handle to the keyboard hook procedure.
         /// </summary>
@@ -369,14 +357,15 @@ namespace Doppelganger.Hook
 
         public void StopStopwatch()
         {
+            stopwatch.Stop();
+
             var e = new KeyboardInput
             {
                 Key = Keys.None,
                 KeyStatus = KeyStatus.Down,
                 Millis = stopwatch.ElapsedMilliseconds
             };
-            stopwatch.Stop();
-            KeyDown?.Invoke(this, e);
+            KeyboardStatusChanged?.Invoke(this, e);
         }
 
 
@@ -501,48 +490,34 @@ namespace Doppelganger.Hook
             //Indicates if any of underlaing events set e.Handled flag
             bool handled = false;
             //If was Ok and someone listens to events
-            if ((nCode >= 0) && (KeyDown != null || KeyUp != null))
+            if ((nCode >= 0) && KeyboardStatusChanged != null)
             {
                 //Read structure KeyboardHookStruct at lParam
                 var myKeyboardHookStruct = (KeyboardHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardHookStruct));
-                if (KeyDown != null && (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN))
+
+                var keyData = (Keys)myKeyboardHookStruct.vkCode;
+                var e = new KeyboardInput
                 {
-                    #region Raise KeyDown
+                    Key = keyData,
+                    Millis = stopwatch.ElapsedMilliseconds
+                };
 
-                    var keyData = (Keys)myKeyboardHookStruct.vkCode;
-                    var e = new KeyboardInput
-                    {
-                        Key = keyData,
-                        KeyStatus = KeyStatus.Down,
-                        Millis = stopwatch.ElapsedMilliseconds
-                    };
-                    stopwatch.Restart();
-                    KeyDown?.Invoke(this, e);
-                    
-                    handled = handled || e.Handled;
-
-                    #endregion
+                // Raise KeyDown
+                if (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN)
+                {
+                    e.KeyStatus = KeyStatus.Down;
                 }
 
-
-                if (KeyUp != null && (wParam == WM_KEYUP || wParam == WM_SYSKEYUP))
+                // Raise KeyUp
+                if (wParam == WM_KEYUP || wParam == WM_SYSKEYUP)
                 {
-                    #region Raise KeyUp
-
-                    var keyData = (Keys)myKeyboardHookStruct.vkCode;
-                    var e = new KeyboardInput
-                    {
-                        Key = keyData,
-                        KeyStatus = KeyStatus.Up,
-                        Millis = stopwatch.ElapsedMilliseconds
-                    }; ;
-                    stopwatch.Restart();
-                    KeyUp?.Invoke(this, e);
-
-                    handled = handled || e.Handled;
-
-                    #endregion
+                    e.KeyStatus = KeyStatus.Up;
                 }
+
+                stopwatch.Restart();
+                KeyboardStatusChanged?.Invoke(this, e);
+
+                handled = handled || e.Handled;
             }
 
             //If event handled in application do not handoff to other listeners

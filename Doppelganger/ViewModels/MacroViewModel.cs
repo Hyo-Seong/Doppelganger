@@ -62,6 +62,8 @@ namespace Doppelganger.ViewModels
             StopeRecordingCommand = new DelegateCommand(StopHooking);
 
             _mouseHook.MouseHookReceived += new MouseHookCallback(mouseHook_MouseWheel);
+
+            _keyboardHook.KeyboardStatusChanged += _hook_KeyEvent;
         }
 
         private bool flag2 = true;
@@ -73,8 +75,8 @@ namespace Doppelganger.ViewModels
 
             _mouseHook.Uninstall();
             _keyboardHook.Stop();
-            _keyboardHook.KeyDown -= _hook_KeyEvent;
-            _keyboardHook.KeyUp -= _hook_KeyEvent;
+            //_keyboardHook.KeyDown -= _hook_KeyEvent;
+            //_keyboardHook.KeyUp -= _hook_KeyEvent;
             Items.Add((Macro)macro.Clone());
             macro = null;
         }
@@ -92,8 +94,7 @@ namespace Doppelganger.ViewModels
 
             _keyboardHook.StartStopwatch();
             _keyboardHook.Start();
-            _keyboardHook.KeyDown += _hook_KeyEvent;
-            _keyboardHook.KeyUp += _hook_KeyEvent;
+
         }
 
         private void StartMouseHooking()
@@ -141,15 +142,13 @@ namespace Doppelganger.ViewModels
                 };
                 _keyboardHook.StartStopwatch();
                 _keyboardHook.Start();
-                _keyboardHook.KeyDown += _hook_KeyEvent;
-                _keyboardHook.KeyUp += _hook_KeyEvent;
+                _keyboardHook.KeyboardStatusChanged += _hook_KeyEvent;
             }
             else
             {
                 _keyboardHook.StopStopwatch();
                 _keyboardHook.Stop();
-                _keyboardHook.KeyDown -= _hook_KeyEvent;
-                _keyboardHook.KeyUp -= _hook_KeyEvent;
+                _keyboardHook.KeyboardStatusChanged -= _hook_KeyEvent;
                 Items.Add((Macro)macro.Clone());
                 macro = null;
             }
