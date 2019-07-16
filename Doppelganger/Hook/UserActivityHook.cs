@@ -554,7 +554,14 @@ namespace Doppelganger.Hook
 
         public void StopStopwatch()
         {
+            var e = new KeyboardInput
+            {
+                Key = Keys.None,
+                KeyStatus = KeyStatus.Down,
+                Millis = stopwatch.ElapsedMilliseconds
+            };
             stopwatch.Stop();
+            KeyDown?.Invoke(this, e);
         }
 
 

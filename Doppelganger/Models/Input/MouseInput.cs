@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static InputManager.Mouse;
 using static InputManager.MouseHook;
 
 namespace Doppelganger.Models.Input
@@ -24,6 +25,13 @@ namespace Doppelganger.Models.Input
             set => SetProperty(ref _mouseStatus, value);
         }
 
+        private uint _mouseData;
+        public uint MouseData
+        {
+            get => _mouseData;
+            set => SetProperty(ref _mouseData, value);
+        }
+
         private POINT _point;
         public POINT Point
         {
@@ -40,20 +48,6 @@ namespace Doppelganger.Models.Input
                 Point = this.Point
             };
         }
-    }
-    public enum MouseButtons
-    {
-        LeftDown = 2,
-        LeftUp = 4,
-        RightDown = 8,
-        RightUp = 16,
-        MiddleDown = 32,
-        MiddleUp = 64,
-        Wheel = 2048,
-        Absolute = 32768,
-        Move = 0,
-        Down = -120,
-        Up = 120
     }
 
 }

@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 using static RamGecTools.MouseHook;
 using Doppelganger.Models.Input;
 using RamGecTools;
+using InputManager;
+using static InputManager.Mouse;
+using MouseHook = RamGecTools.MouseHook;
 
 namespace Doppelganger.ViewModels
 {
@@ -25,14 +28,15 @@ namespace Doppelganger.ViewModels
         #endregion
 
         #region 
+        private readonly uint WHEEL_DOWN = 4287102976;
+        private readonly uint WHEEL_UP = 7864320;
+
         private readonly uint KEYDOWN = 0x1;
         private readonly uint KEYUP = 0x2;
 
-        MouseHook _mouseHook = new MouseHook();
+        private MouseHook _mouseHook = new MouseHook();
 
-        private UserActivityHook _keyboardHook;
-
-        private Stopwatch stopwatch = new Stopwatch();
+        private UserActivityHook _keyboardHook = new UserActivityHook();
 
         private ObservableCollection<Macro> _items;
         public ObservableCollection<Macro> Items
@@ -65,6 +69,11 @@ namespace Doppelganger.ViewModels
         {
             if (flag2)
             {
+                macro = new Macro
+                {
+                    Name = "MouseTemp"
+                };
+
                 _mouseHook.MouseHookReceived += new MouseHookCallback(mouseHook_MouseWheel);
 
                 _mouseHook.Install();
@@ -72,6 +81,8 @@ namespace Doppelganger.ViewModels
             else
             {
                 _mouseHook.Uninstall();
+                Items.Add((Macro)macro.Clone());
+                macro = null;
             }
             flag2 = !flag2;
         }
@@ -94,7 +105,7 @@ namespace Doppelganger.ViewModels
             {
                 macro = new Macro
                 {
-                    Name = "Temp1"
+                    Name = "KeyboardTemp"
                 };
                 _keyboardHook.StartStopwatch();
                 _keyboardHook.KeyDown += _hook_KeyEvent;
@@ -105,28 +116,66 @@ namespace Doppelganger.ViewModels
                 _keyboardHook.StopStopwatch();
                 _keyboardHook.KeyDown -= _hook_KeyEvent;
                 _keyboardHook.KeyUp -= _hook_KeyEvent;
-
-                macro.KeyboardInputs.Add(new KeyboardInput
-                {
-                    Key = Keys.None,
-                    KeyStatus = KeyStatus.Down,
-                    Millis = stopwatch.ElapsedMilliseconds
-                });
                 Items.Add((Macro)macro.Clone());
                 macro = null;
             }
             stop = !stop;
         }
 
-        public void ExcuteMacro(List<KeyboardInput> keyboardInputs)
+        public void ExcuteMouseInputs(List<MouseInput> mouseInputs)
         {
-            if(keyboardInputs != null && keyboardInputs.Count != 0)
+            if (mouseInputs != null && mouseInputs.Count != 0)
             {
-                keyboardInputs.ForEach(PressKey);
+                mouseInputs.ForEach(PressMouse);
             }
         }
 
-        void PressKey(KeyboardInput input)
+        public T ParseEnum<T>(string value)
+        {
+            return (T)Enum.Parse(typeof(T), value, true);
+        }
+
+        private void PressMouse(MouseInput mouseInput)
+        {
+            MovePosition(mouseInput.Point);
+            if(mouseInput.MouseStatus == MouseButtons.Wheel)
+            {
+                Mouse.Scroll(CheckWheelStatus(mouseInput.MouseData));
+            }
+            else
+            {
+                Mouse.SendButton(mouseInput.MouseStatus);
+            }
+        }
+
+        private Mouse.ScrollDirection CheckWheelStatus(uint mouseData)
+        {
+            Mouse.ScrollDirection scrollDirection = Mouse.ScrollDirection.Down;
+            if (mouseData == WHEEL_DOWN)
+            {
+                scrollDirection = Mouse.ScrollDirection.Down;
+            }
+            else if (mouseData == WHEEL_UP)
+            {
+                scrollDirection = Mouse.ScrollDirection.Up;
+            }
+            return scrollDirection;
+        }
+
+        private void MovePosition(InputManager.MouseHook.POINT point)
+        {
+            Mouse.Move(point.x, point.y);
+        }
+
+        public void ExcuteKeyboardInputs(List<KeyboardInput> keyboardInputs)
+        {
+            if(keyboardInputs != null && keyboardInputs.Count != 0)
+            {
+                keyboardInputs.ForEach(PressKeyboard);
+            }
+        }
+
+        void PressKeyboard(KeyboardInput input)
         {
             Thread.Sleep((int)input.Millis);
             Console.WriteLine(input.Key + " : " + input.KeyStatus.ToString());

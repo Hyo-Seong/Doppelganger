@@ -28,6 +28,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Doppelganger.Models.Input;
+using static InputManager.Mouse;
 
 namespace RamGecTools
 {   
@@ -36,10 +37,6 @@ namespace RamGecTools
     /// </summary>
     class MouseHook
     {
-        private readonly uint WHEEL_DOWN = 4287102976;
-        private readonly uint WHEEL_UP = 7864320;
-
-
         /// <summary>
         /// Internal callback processing function
         /// </summary>
@@ -132,31 +129,12 @@ namespace RamGecTools
                     Millis = stopwatch.ElapsedMilliseconds
                 };
 
-                if(mouseInput.MouseStatus == MouseButtons.Wheel)
-                {
-                    Console.WriteLine(mSLLHOOKSTRUCT.mouseData);
-                    mouseInput.MouseStatus = CheckWheelStatus(mSLLHOOKSTRUCT.mouseData);
-                }
-
                 stopwatch.Restart();
                 MouseHookReceived?.Invoke(mouseInput);
             }
             return CallNextHookEx(hookID, nCode, wParam, lParam);
         }
 
-        private MouseButtons CheckWheelStatus(uint mouseData)
-        {
-            MouseButtons mouseButtons = MouseButtons.Absolute;
-            if (mouseData == WHEEL_DOWN)
-            {
-                mouseButtons = MouseButtons.Down;
-            }
-            else if (mouseData == WHEEL_UP)
-            {
-                mouseButtons = MouseButtons.Up;
-            }
-            return mouseButtons;
-        }
 
         public T ParseEnum<T>(string value)
         {
