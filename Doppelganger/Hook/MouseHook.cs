@@ -138,7 +138,13 @@ namespace RamGecTools
 
         public T ParseEnum<T>(string value)
         {
-            return (T)Enum.Parse(typeof(T), value, true);
+            try
+            {
+                return (T)Enum.Parse(typeof(T), value, true);
+            } catch
+            {
+                return default;
+            }
         }
 
         #region WinAPI

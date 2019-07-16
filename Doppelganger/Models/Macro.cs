@@ -67,6 +67,11 @@ namespace Doppelganger.Models
                 macro.KeyboardInputs.Add((KeyboardInput)x.Clone());
             });
 
+            MouseInputs.ForEach(x =>
+            {
+                macro.MouseInputs.Add((MouseInput)x.Clone());
+            });
+
             return macro;
         }
     }

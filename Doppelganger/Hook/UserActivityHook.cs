@@ -586,34 +586,34 @@ namespace Doppelganger.Hook
             OperatingSystem osInfo = Environment.OSVersion;
 
             //Install Mouse hook only if it is not installed and must be installed
-            if (hMouseHook == 0 && installMouseHook)
-            {
-                //Create an instance of HookProc.
-                MouseHookProcedure = new HookProc(MouseHookProc);
+            //if (hMouseHook == 0 && installMouseHook)
+            //{
+            //    //Create an instance of HookProc.
+            //    MouseHookProcedure = new HookProc(MouseHookProc);
 
-                //XP bug... - Nicke SM
-                if (osInfo.Version.Major < 6)
-                {
-                    hMouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookProcedure, Marshal.GetHINSTANCE(Assembly.GetExecutingAssembly().GetModules()[0]), 0);
-                }
-                else
-                {
-                    //Install hook
-                    hMouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookProcedure, IntPtr.Zero, 0);
-                }
+            //    //XP bug... - Nicke SM
+            //    if (osInfo.Version.Major < 6)
+            //    {
+            //        hMouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookProcedure, Marshal.GetHINSTANCE(Assembly.GetExecutingAssembly().GetModules()[0]), 0);
+            //    }
+            //    else
+            //    {
+            //        //Install hook
+            //        hMouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookProcedure, IntPtr.Zero, 0);
+            //    }
 
 
-                //If SetWindowsHookEx fails.
-                if (hMouseHook == 0)
-                {
-                    //Returns the error code returned by the last unmanaged function called using platform invoke that has the DllImportAttribute.SetLastError flag set. 
-                    int errorCode = Marshal.GetLastWin32Error();
-                    //Do cleanup
-                    Stop(true, false, false);
-                    //Initializes and throws a new instance of the Win32Exception class with the specified error. 
-                    throw new Win32Exception(errorCode);
-                }
-            }
+            //    //If SetWindowsHookEx fails.
+            //    if (hMouseHook == 0)
+            //    {
+            //        //Returns the error code returned by the last unmanaged function called using platform invoke that has the DllImportAttribute.SetLastError flag set. 
+            //        int errorCode = Marshal.GetLastWin32Error();
+            //        //Do cleanup
+            //        Stop(true, false, false);
+            //        //Initializes and throws a new instance of the Win32Exception class with the specified error. 
+            //        throw new Win32Exception(errorCode);
+            //    }
+            //}
 
             //Install Keyboard hook only if it is not installed and must be installed
             if (hKeyboardHook == 0 && installKeyboardHook)
@@ -704,95 +704,95 @@ namespace Doppelganger.Hook
 
         #region Event Triggers
 
-        /// <summary>
-        /// A callback function which will be called every time a mouse activity detected.
-        /// </summary>
-        /// <param name="nCode">
-        /// [in] Specifies whether the hook procedure must process the message. 
-        /// If nCode is HC_ACTION, the hook procedure must process the message. 
-        /// If nCode is less than zero, the hook procedure must pass the message to the 
-        /// CallNextHookEx function without further processing and must return the 
-        /// value returned by CallNextHookEx.
-        /// </param>
-        /// <param name="wParam">
-        /// [in] Specifies whether the message was sent by the current thread. 
-        /// If the message was sent by the current thread, it is nonzero; otherwise, it is zero. 
-        /// </param>
-        /// <param name="lParam">
-        /// [in] Pointer to a CWPSTRUCT structure that contains details about the message. 
-        /// </param>
-        /// <returns>
-        /// If nCode is less than zero, the hook procedure must return the value returned by CallNextHookEx. 
-        /// If nCode is greater than or equal to zero, it is highly recommended that you call CallNextHookEx 
-        /// and return the value it returns; otherwise, other applications that have installed WH_CALLWNDPROC 
-        /// hooks will not receive hook notifications and may behave incorrectly as a result. If the hook 
-        /// procedure does not call CallNextHookEx, the return value should be zero. 
-        /// </returns>
-        private int MouseHookProc(int nCode, int wParam, IntPtr lParam)
-        {
-            //If Ok and someone listens to our events
-            if ((nCode >= 0) && (OnMouseActivity != null))
-            {
-                //Marshall the data from callback.
-                var mouseHookStruct = (MouseLLHookStruct)Marshal.PtrToStructure(lParam, typeof(MouseLLHookStruct));
+        ///// <summary>
+        ///// A callback function which will be called every time a mouse activity detected.
+        ///// </summary>
+        ///// <param name="nCode">
+        ///// [in] Specifies whether the hook procedure must process the message. 
+        ///// If nCode is HC_ACTION, the hook procedure must process the message. 
+        ///// If nCode is less than zero, the hook procedure must pass the message to the 
+        ///// CallNextHookEx function without further processing and must return the 
+        ///// value returned by CallNextHookEx.
+        ///// </param>
+        ///// <param name="wParam">
+        ///// [in] Specifies whether the message was sent by the current thread. 
+        ///// If the message was sent by the current thread, it is nonzero; otherwise, it is zero. 
+        ///// </param>
+        ///// <param name="lParam">
+        ///// [in] Pointer to a CWPSTRUCT structure that contains details about the message. 
+        ///// </param>
+        ///// <returns>
+        ///// If nCode is less than zero, the hook procedure must return the value returned by CallNextHookEx. 
+        ///// If nCode is greater than or equal to zero, it is highly recommended that you call CallNextHookEx 
+        ///// and return the value it returns; otherwise, other applications that have installed WH_CALLWNDPROC 
+        ///// hooks will not receive hook notifications and may behave incorrectly as a result. If the hook 
+        ///// procedure does not call CallNextHookEx, the return value should be zero. 
+        ///// </returns>
+        //private int MouseHookProc(int nCode, int wParam, IntPtr lParam)
+        //{
+        //    //If Ok and someone listens to our events
+        //    if ((nCode >= 0) && (OnMouseActivity != null))
+        //    {
+        //        //Marshall the data from callback.
+        //        var mouseHookStruct = (MouseLLHookStruct)Marshal.PtrToStructure(lParam, typeof(MouseLLHookStruct));
 
-                //Detect button clicked
-                var button = MouseButton.XButton1;
-                short mouseDelta = 0;
+        //        //Detect button clicked
+        //        var button = MouseButton.XButton1;
+        //        short mouseDelta = 0;
 
-                #region Switch Mouse Actions
+        //        #region Switch Mouse Actions
 
-                switch (wParam)
-                {
-                    case WM_LBUTTONDOWN:
-                        //case WM_LBUTTONUP: 
-                        //case WM_LBUTTONDBLCLK: 
-                        button = MouseButton.Left;
-                        break;
-                    case WM_RBUTTONDOWN:
-                        //case WM_RBUTTONUP: 
-                        //case WM_RBUTTONDBLCLK: 
-                        button = MouseButton.Right;
-                        break;
-                    case WM_MOUSEWHEEL:
-                        //If the message is WM_MOUSEWHEEL, the high-order word of mouseData member is the wheel delta. 
-                        //One wheel click is defined as WHEEL_DELTA, which is 120. 
-                        //(value >> 16) & 0xffff; retrieves the high-order word from the given 32-bit value
-                        mouseDelta = (short)((mouseHookStruct.mouseData >> 16) & 0xffff);
-                        //TODO: X BUTTONS (I havent them so was unable to test)
-                        //If the message is WM_XBUTTONDOWN, WM_XBUTTONUP, WM_XBUTTONDBLCLK, WM_NCXBUTTONDOWN, WM_NCXBUTTONUP, 
-                        //or WM_NCXBUTTONDBLCLK, the high-order word specifies which X button was pressed or released, 
-                        //and the low-order word is reserved. This value can be one or more of the following values. 
-                        //Otherwise, mouseData is not used. 
-                        button = MouseButton.Middle;
-                        break;
-                    case WM_MBUTTONDOWN:
-                        //case WM_MBUTTONUP: 
-                        //case WM_MBUTTONDBLCLK:
-                        button = MouseButton.Middle;
-                        break;
-                    default:
-                        return CallNextHookEx(hMouseHook, nCode, wParam, lParam); 
-                        //HU3HU3 - A little funny momment: I just frooze my cursor by returning 1 instead of calling the next hook. - Nicke
-                        //Congrats to myself. ;D 
-                        //05:24 AM 01/02/2014 (day-month-year)
-                }
+        //        switch (wParam)
+        //        {
+        //            case WM_LBUTTONDOWN:
+        //                //case WM_LBUTTONUP: 
+        //                //case WM_LBUTTONDBLCLK: 
+        //                button = MouseButton.Left;
+        //                break;
+        //            case WM_RBUTTONDOWN:
+        //                //case WM_RBUTTONUP: 
+        //                //case WM_RBUTTONDBLCLK: 
+        //                button = MouseButton.Right;
+        //                break;
+        //            case WM_MOUSEWHEEL:
+        //                //If the message is WM_MOUSEWHEEL, the high-order word of mouseData member is the wheel delta. 
+        //                //One wheel click is defined as WHEEL_DELTA, which is 120. 
+        //                //(value >> 16) & 0xffff; retrieves the high-order word from the given 32-bit value
+        //                mouseDelta = (short)((mouseHookStruct.mouseData >> 16) & 0xffff);
+        //                //TODO: X BUTTONS (I havent them so was unable to test)
+        //                //If the message is WM_XBUTTONDOWN, WM_XBUTTONUP, WM_XBUTTONDBLCLK, WM_NCXBUTTONDOWN, WM_NCXBUTTONUP, 
+        //                //or WM_NCXBUTTONDBLCLK, the high-order word specifies which X button was pressed or released, 
+        //                //and the low-order word is reserved. This value can be one or more of the following values. 
+        //                //Otherwise, mouseData is not used. 
+        //                button = MouseButton.Middle;
+        //                break;
+        //            case WM_MBUTTONDOWN:
+        //                //case WM_MBUTTONUP: 
+        //                //case WM_MBUTTONDBLCLK:
+        //                button = MouseButton.Middle;
+        //                break;
+        //            default:
+        //                return CallNextHookEx(hMouseHook, nCode, wParam, lParam); 
+        //                //HU3HU3 - A little funny momment: I just frooze my cursor by returning 1 instead of calling the next hook. - Nicke
+        //                //Congrats to myself. ;D 
+        //                //05:24 AM 01/02/2014 (day-month-year)
+        //        }
 
-                #endregion
+        //        #endregion
 
-                //Double clicks
-                int clickCount = (wParam == WM_LBUTTONDBLCLK || wParam == WM_RBUTTONDBLCLK) ? 2 : 1;
+        //        //Double clicks
+        //        int clickCount = (wParam == WM_LBUTTONDBLCLK || wParam == WM_RBUTTONDBLCLK) ? 2 : 1;
 
-                //Generate event 
-                var e = new CustomMouseEventArgs(button, clickCount, mouseHookStruct.pt.x, mouseHookStruct.pt.y, mouseDelta);
+        //        //Generate event 
+        //        var e = new CustomMouseEventArgs(button, clickCount, mouseHookStruct.pt.x, mouseHookStruct.pt.y, mouseDelta);
                 
-                //Raise it
-                OnMouseActivity?.Invoke(this, e);
-            }
+        //        //Raise it
+        //        OnMouseActivity?.Invoke(this, e);
+        //    }
             
-            //Call next hook
-            return CallNextHookEx(hMouseHook, nCode, wParam, lParam);
-        }
+        //    //Call next hook
+        //    return CallNextHookEx(hMouseHook, nCode, wParam, lParam);
+        //}
 
         /// <summary>
         /// A callback function which will be called every time a keyboard activity detected.

@@ -73,13 +73,14 @@ namespace Doppelganger.ViewModels
                 {
                     Name = "MouseTemp"
                 };
-
+                _mouseHook.StartStopwatch();
                 _mouseHook.MouseHookReceived += new MouseHookCallback(mouseHook_MouseWheel);
 
                 _mouseHook.Install();
             }
             else
             {
+                _mouseHook.StopStopwatch();
                 _mouseHook.Uninstall();
                 Items.Add((Macro)macro.Clone());
                 macro = null;
@@ -137,12 +138,16 @@ namespace Doppelganger.ViewModels
 
         private void PressMouse(MouseInput mouseInput)
         {
-            MovePosition(mouseInput.Point);
+            Thread.Sleep((int)mouseInput.Millis);
+            
             if(mouseInput.MouseStatus == MouseButtons.Wheel)
             {
                 Mouse.Scroll(CheckWheelStatus(mouseInput.MouseData));
             }
-            else
+            else if(mouseInput.MouseStatus == 0)
+            {
+                MovePosition(mouseInput.Point);
+            } else
             {
                 Mouse.SendButton(mouseInput.MouseStatus);
             }

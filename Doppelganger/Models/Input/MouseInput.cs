@@ -18,7 +18,7 @@ namespace Doppelganger.Models.Input
             set => SetProperty(ref _millis, value);
         }
 
-        private MouseButtons _mouseStatus;
+        private MouseButtons _mouseStatus = MouseButtons.Absolute;
         public MouseButtons MouseStatus
         {
             get => _mouseStatus;
@@ -44,6 +44,7 @@ namespace Doppelganger.Models.Input
             return new MouseInput
             {
                 Millis = this.Millis,
+                MouseData = this.MouseData,
                 MouseStatus = this.MouseStatus,
                 Point = this.Point
             };
