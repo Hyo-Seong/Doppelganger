@@ -11,12 +11,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static RamGecTools.MouseHook;
 using Doppelganger.Models.Input;
-using RamGecTools;
 using InputManager;
 using static InputManager.Mouse;
-using MouseHook = RamGecTools.MouseHook;
+using MouseHook = Doppelganger.Hook.MouseHook;
+using static Doppelganger.Hook.MouseHook;
 
 namespace Doppelganger.ViewModels
 {
@@ -57,7 +56,7 @@ namespace Doppelganger.ViewModels
 
         public MacroViewModel()
         {
-            _keyboardHook = new UserActivityHook(true, true);
+            _keyboardHook = new UserActivityHook(false);
             Items = new ObservableCollection<Macro>();
             StartKeyboardRecordingCommand = new DelegateCommand(StartKeyboardHooking);
             StartMouseRecordingCommand = new DelegateCommand(StartMouseHooking);
@@ -109,12 +108,14 @@ namespace Doppelganger.ViewModels
                     Name = "KeyboardTemp"
                 };
                 _keyboardHook.StartStopwatch();
+                _keyboardHook.Start();
                 _keyboardHook.KeyDown += _hook_KeyEvent;
                 _keyboardHook.KeyUp += _hook_KeyEvent;
             }
             else
             {
                 _keyboardHook.StopStopwatch();
+                _keyboardHook.Stop();
                 _keyboardHook.KeyDown -= _hook_KeyEvent;
                 _keyboardHook.KeyUp -= _hook_KeyEvent;
                 Items.Add((Macro)macro.Clone());

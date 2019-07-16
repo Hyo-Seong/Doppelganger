@@ -30,7 +30,7 @@ using System.Diagnostics;
 using Doppelganger.Models.Input;
 using static InputManager.Mouse;
 
-namespace RamGecTools
+namespace Doppelganger.Hook
 {   
     /// <summary>
     /// Class for intercepting low level Windows mouse hooks.
