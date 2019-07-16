@@ -67,12 +67,12 @@
     <Compile Include="Models\Input\KeyboardInput.cs" />
     <Compile Include="Models\Input\MouseInput.cs" />
     <Compile Include="Models\Macro.cs" />
-    <Compile Include="Hook\CustomKeyEventArgs.cs" />
-    <Compile Include="Hook\CustomKeyPressEventArgs.cs" />
-    <Compile Include="Hook\CustomMouseEventArgs.cs" />
-    <Compile Include="Hook\Keys.cs" />
+    <Compile Include="Hook\Keyboard\CustomKeyEventArgs.cs" />
+    <Compile Include="Hook\Keyboard\CustomKeyPressEventArgs.cs" />
+    <Compile Include="Hook\Keyboard\CustomMouseEventArgs.cs" />
+    <Compile Include="Hook\Keyboard\Keys.cs" />
     <Compile Include="Hook\Mouse\MouseHook.cs" />
-    <Compile Include="Hook\UserActivityHook.cs" />
+    <Compile Include="Hook\Keyboard\KeyboardHook.cs" />
     <Compile Include="ViewModels\MacroViewModel.cs" />
     <Compile Include="Views\RecordManager.xaml.cs">
       <DependentUpon>RecordManager.xaml</DependentUpon>
@@ -124,8 +124,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Hook\Keyboard\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

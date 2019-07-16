@@ -32,8 +32,8 @@
         <Grid Grid.Column="1">
             <StackPanel Margin="10">
                 <Button Content="불러오기" Margin="5" Click="Button_Click"/>
-                <Button Content="키보드 새로만들기" Margin="5" Command="{Binding StartKeyboardRecordingCommand}"/>
-                <Button Content="마우스 새로만들기" Margin="5" Command="{Binding StartMouseRecordingCommand}"/>
+                <Button Content="새로만들기" Margin="5" Command="{Binding StartRecordingCommand}"/>
+                <Button Content="정지" Margin="5" Command="{Binding StopeRecordingCommand}"/>
             </StackPanel>
         </Grid>
     </Grid>

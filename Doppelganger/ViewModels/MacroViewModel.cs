@@ -35,7 +35,7 @@ namespace Doppelganger.ViewModels
 
         private MouseHook _mouseHook = new MouseHook();
 
-        private UserActivityHook _keyboardHook = new UserActivityHook();
+        private Hook.KeyboardHook _keyboardHook = new Hook.KeyboardHook();
 
         private ObservableCollection<Macro> _items;
         public ObservableCollection<Macro> Items
@@ -48,21 +48,53 @@ namespace Doppelganger.ViewModels
         #endregion
 
         #region Command
-        public DelegateCommand StartKeyboardRecordingCommand { get; private set; }
-        public DelegateCommand StartMouseRecordingCommand { get; private set; }
+        public DelegateCommand StartRecordingCommand { get; private set; }
+        public DelegateCommand StopeRecordingCommand { get; private set; }
 
 
         #endregion
 
         public MacroViewModel()
         {
-            _keyboardHook = new UserActivityHook(false);
+            _keyboardHook = new Hook.KeyboardHook(false);
             Items = new ObservableCollection<Macro>();
-            StartKeyboardRecordingCommand = new DelegateCommand(StartKeyboardHooking);
-            StartMouseRecordingCommand = new DelegateCommand(StartMouseHooking);
+            StartRecordingCommand = new DelegateCommand(StartHooking);
+            StopeRecordingCommand = new DelegateCommand(StopHooking);
+
+            _mouseHook.MouseHookReceived += new MouseHookCallback(mouseHook_MouseWheel);
         }
 
         private bool flag2 = true;
+
+        private void StopHooking()
+        {
+            _mouseHook.StopStopwatch();
+            _keyboardHook.StopStopwatch();
+
+            _mouseHook.Uninstall();
+            _keyboardHook.Stop();
+            _keyboardHook.KeyDown -= _hook_KeyEvent;
+            _keyboardHook.KeyUp -= _hook_KeyEvent;
+            Items.Add((Macro)macro.Clone());
+            macro = null;
+        }
+
+        private void StartHooking()
+        {
+            macro = new Macro
+            {
+                Name = "MouseTemp"
+            };
+            _mouseHook.StartStopwatch();
+            //_mouseHook.MouseHookReceived += new MouseHookCallback(mouseHook_MouseWheel);
+
+            _mouseHook.Install();
+
+            _keyboardHook.StartStopwatch();
+            _keyboardHook.Start();
+            _keyboardHook.KeyDown += _hook_KeyEvent;
+            _keyboardHook.KeyUp += _hook_KeyEvent;
+        }
 
         private void StartMouseHooking()
         {
