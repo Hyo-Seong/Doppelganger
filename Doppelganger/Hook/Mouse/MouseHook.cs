@@ -64,7 +64,7 @@ namespace Doppelganger.Hook
         /// Install low level mouse hook
         /// </summary>
         /// <param name="mouseHookCallbackFunc">Callback function</param>
-        public void Install()
+        public void StartHooking()
         {
             hookHandler = HookFunc;
             hookID = SetHook(hookHandler);
@@ -73,7 +73,7 @@ namespace Doppelganger.Hook
         /// <summary>
         /// Remove low level mouse hook
         /// </summary>
-        public void Uninstall()
+        public void StopHooking()
         {
             if (hookID == IntPtr.Zero)
                 return;
@@ -87,7 +87,7 @@ namespace Doppelganger.Hook
         /// </summary>
         ~MouseHook()
         {
-            Uninstall();
+            StopHooking();
         }
 
         public void StartStopwatch()

@@ -293,7 +293,7 @@ namespace Doppelganger.Hook
         {
             new System.Security.Permissions.UIPermission(System.Security.Permissions.UIPermissionWindow.AllWindows).Demand();
 
-            Start();
+            StartHooking();
         }
 
         /// <summary>
@@ -307,7 +307,7 @@ namespace Doppelganger.Hook
         /// </remarks>
         public KeyboardHook(bool installKeyboardHook)
         {
-            Start(installKeyboardHook);
+            StartHooking(installKeyboardHook);
         }
 
         /// <summary>
@@ -316,7 +316,7 @@ namespace Doppelganger.Hook
         ~KeyboardHook()
         {
             //uninstall hooks and do not throw exceptions
-            Stop(true, false);
+            StopHooking(true, false);
         }
 
         #endregion
@@ -373,24 +373,24 @@ namespace Doppelganger.Hook
         /// Installs both mouse and keyboard hooks and starts rasing events
         /// </summary>
         /// <exception cref="Win32Exception">Any windows problem.</exception>
-        public void Start()
+        public void StartHooking()
         {
-            this.Start(true);
+            this.StartHooking(true);
         }
 
         /// <summary>
         /// Installs both or one of mouse and/or keyboard hooks and starts rasing events
         /// </summary>
         /// <param name="installMouseHook"><b>true</b> if mouse events must be monitored</param>
-        /// <param name="installKeyboardHook"><b>true</b> if keyboard events must be monitored</param>
+        /// <param name="startlKeyboardHook"><b>true</b> if keyboard events must be monitored</param>
         /// <exception cref="Win32Exception">Any windows problem.</exception>
-        public void Start(bool installKeyboardHook)
+        public void StartHooking(bool startlKeyboardHook)
         {
             //Gets the system info
             OperatingSystem osInfo = Environment.OSVersion;
 
             //Install Keyboard hook only if it is not installed and must be installed
-            if (hKeyboardHook == 0 && installKeyboardHook)
+            if (hKeyboardHook == 0 && startlKeyboardHook)
             {
                 //Create an instance of HookProc.
                 KeyboardHookProcedure = new HookProc(KeyboardHookProc);
@@ -412,7 +412,7 @@ namespace Doppelganger.Hook
                     //Returns the error code returned by the last unmanaged function called using platform invoke that has the DllImportAttribute.SetLastError flag set. 
                     int errorCode = Marshal.GetLastWin32Error();
                     //do cleanup
-                    Stop(true, false);
+                    StopHooking(true, false);
                     //Initializes and throws a new instance of the Win32Exception class with the specified error. 
                     throw new Win32Exception(errorCode);
                 }
@@ -423,22 +423,22 @@ namespace Doppelganger.Hook
         /// Stops monitoring both mouse and keyboard events and rasing events.
         /// </summary>
         /// <exception cref="Win32Exception">Any windows problem.</exception>
-        public void Stop()
+        public void StopHooking()
         {
-            this.Stop(true, true);
+            this.StopHooking(true, true);
         }
 
         /// <summary>
         /// Stops monitoring both or one of mouse and/or keyboard events and rasing events.
         /// </summary>
         /// <param name="uninstallMouseHook"><b>true</b> if mouse hook must be uninstalled</param>
-        /// <param name="uninstallKeyboardHook"><b>true</b> if keyboard hook must be uninstalled</param>
+        /// <param name="stopKeyboardHook"><b>true</b> if keyboard hook must be uninstalled</param>
         /// <param name="throwExceptions"><b>true</b> if exceptions which occured during uninstalling must be thrown</param>
         /// <exception cref="Win32Exception">Any windows problem.</exception>
-        public void Stop(bool uninstallKeyboardHook, bool throwExceptions)
+        public void StopHooking(bool stopKeyboardHook, bool throwExceptions)
         {
             //If keyboard hook set and must be uninstalled
-            if (hKeyboardHook != 0 && uninstallKeyboardHook)
+            if (hKeyboardHook != 0 && stopKeyboardHook)
             {
                 //Uninstall hook
                 int retKeyboard = UnhookWindowsHookEx(hKeyboardHook);

@@ -45,7 +45,7 @@ namespace Doppelganger.Views
 
         private void ListView_Selected(object sender, SelectionChangedEventArgs e)
         {
-            App.macroViewModel.ExcuteMouseInputs(((Macro)aa.SelectedItem).MouseInputs.ToList());
+            App.macroViewModel.ExcuteInputs((Macro)aa.SelectedItem);
             //App.macroViewModel.ExcuteKeyboardInputs(((Macro)aa.SelectedItem).KeyboardInputs.ToList());
         }
     }

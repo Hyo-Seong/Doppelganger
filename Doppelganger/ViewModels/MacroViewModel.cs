@@ -62,25 +62,8 @@ namespace Doppelganger.ViewModels
             StopeRecordingCommand = new DelegateCommand(StopHooking);
 
             _mouseHook.MouseHookReceived += new MouseHookCallback(mouseHook_MouseWheel);
-
             _keyboardHook.KeyboardStatusChanged += _hook_KeyEvent;
         }
-
-        private bool flag2 = true;
-
-        private void StopHooking()
-        {
-            _mouseHook.StopStopwatch();
-            _keyboardHook.StopStopwatch();
-
-            _mouseHook.Uninstall();
-            _keyboardHook.Stop();
-            //_keyboardHook.KeyDown -= _hook_KeyEvent;
-            //_keyboardHook.KeyUp -= _hook_KeyEvent;
-            Items.Add((Macro)macro.Clone());
-            macro = null;
-        }
-
         private void StartHooking()
         {
             macro = new Macro
@@ -88,37 +71,24 @@ namespace Doppelganger.ViewModels
                 Name = "MouseTemp"
             };
             _mouseHook.StartStopwatch();
-            //_mouseHook.MouseHookReceived += new MouseHookCallback(mouseHook_MouseWheel);
-
-            _mouseHook.Install();
-
             _keyboardHook.StartStopwatch();
-            _keyboardHook.Start();
 
+            _mouseHook.StartHooking();
+            _keyboardHook.StartHooking();
         }
 
-        private void StartMouseHooking()
+        private void StopHooking()
         {
-            if (flag2)
-            {
-                macro = new Macro
-                {
-                    Name = "MouseTemp"
-                };
-                _mouseHook.StartStopwatch();
-                _mouseHook.MouseHookReceived += new MouseHookCallback(mouseHook_MouseWheel);
+            _mouseHook.StopStopwatch();
+            _keyboardHook.StopStopwatch();
 
-                _mouseHook.Install();
-            }
-            else
-            {
-                _mouseHook.StopStopwatch();
-                _mouseHook.Uninstall();
-                Items.Add((Macro)macro.Clone());
-                macro = null;
-            }
-            flag2 = !flag2;
+            _mouseHook.StopHooking();
+            _keyboardHook.StopHooking();
+
+            Items.Add((Macro)macro.Clone());
+            macro = null;
         }
+
 
         void mouseHook_MouseWheel(MouseInput mouseInput)
         {
@@ -130,32 +100,33 @@ namespace Doppelganger.ViewModels
             macro.KeyboardInputs.Add(e);
         }
 
-        private bool stop = true;
-
-        public void StartKeyboardHooking()
+        public void ExcuteInputs(Macro macro)
         {
-            if (stop)
-            {
-                macro = new Macro
-                {
-                    Name = "KeyboardTemp"
-                };
-                _keyboardHook.StartStopwatch();
-                _keyboardHook.Start();
-                _keyboardHook.KeyboardStatusChanged += _hook_KeyEvent;
-            }
-            else
-            {
-                _keyboardHook.StopStopwatch();
-                _keyboardHook.Stop();
-                _keyboardHook.KeyboardStatusChanged -= _hook_KeyEvent;
-                Items.Add((Macro)macro.Clone());
-                macro = null;
-            }
-            stop = !stop;
+            StartKeyboard(macro.KeyboardInputs);
+            StartMouse(macro.MouseInputs);
         }
 
-        public void ExcuteMouseInputs(List<MouseInput> mouseInputs)
+        public Thread StartKeyboard(List<KeyboardInput> keyboardInputs)
+        {
+            var t = new Thread(() => ExcuteKeyboard(keyboardInputs));
+            t.Start();
+            return t;
+        }
+
+        public Thread StartMouse(List<MouseInput> mouseInputs)
+        {
+            var t = new Thread(() => ExcuteMouse(mouseInputs));
+            t.Start();
+            return t;
+        }
+        private void ExcuteKeyboard(List<KeyboardInput> keyboardInputs)
+        {
+            if (keyboardInputs != null && keyboardInputs.Count != 0)
+            {
+                keyboardInputs.ForEach(PressKeyboard);
+            }
+        }
+        private void ExcuteMouse(List<MouseInput> mouseInputs)
         {
             if (mouseInputs != null && mouseInputs.Count != 0)
             {
@@ -163,10 +134,6 @@ namespace Doppelganger.ViewModels
             }
         }
 
-        public T ParseEnum<T>(string value)
-        {
-            return (T)Enum.Parse(typeof(T), value, true);
-        }
 
         private void PressMouse(MouseInput mouseInput)
         {
@@ -215,7 +182,6 @@ namespace Doppelganger.ViewModels
         void PressKeyboard(KeyboardInput input)
         {
             Thread.Sleep((int)input.Millis);
-            Console.WriteLine(input.Key + " : " + input.KeyStatus.ToString());
 
             uint dwFlags = input.KeyStatus == KeyStatus.Down ? KEYDOWN : KEYDOWN | KEYUP;
             keybd_event(byte.Parse(((int)input.Key).ToString()), 0x45, dwFlags, UIntPtr.Zero);
