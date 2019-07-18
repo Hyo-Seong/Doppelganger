@@ -6,6 +6,7 @@
         xmlns:ctrl="clr-namespace:Doppelganger.Controls"
         xmlns:local="clr-namespace:Doppelganger.Views"
         mc:Ignorable="d"
+        WindowState="{Binding WindowState}"
         Title="Startup" Height="500" Width="700">
     <Grid>
         <Grid.ColumnDefinitions>

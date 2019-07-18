@@ -16,6 +16,7 @@ using InputManager;
 using static InputManager.Mouse;
 using MouseHook = Doppelganger.Hook.MouseHook;
 using static Doppelganger.Hook.MouseHook;
+using System.Windows;
 
 namespace Doppelganger.ViewModels
 {
@@ -34,6 +35,13 @@ namespace Doppelganger.ViewModels
         private readonly uint KEYUP = 0x2;
 
         private MouseHook _mouseHook = new MouseHook();
+
+        private WindowState _windowState = WindowState.Normal;
+        public WindowState WindowState
+        {
+            get => _windowState;
+            set => SetProperty(ref _windowState, value);
+        }
 
         private Hook.KeyboardHook _keyboardHook = new Hook.KeyboardHook();
 
@@ -66,6 +74,7 @@ namespace Doppelganger.ViewModels
         }
         private void StartHooking()
         {
+            WindowState = WindowState.Minimized;
             macro = new Macro
             {
                 Name = "MouseTemp"
@@ -75,6 +84,7 @@ namespace Doppelganger.ViewModels
 
             _mouseHook.StartHooking();
             _keyboardHook.StartHooking();
+            
         }
 
         private void StopHooking()
