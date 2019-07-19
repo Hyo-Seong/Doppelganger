@@ -18,6 +18,10 @@ using MouseHook = Doppelganger.Hook.MouseHook;
 using static Doppelganger.Hook.MouseHook;
 using System.Windows;
 using Shell32;
+using Microsoft.Win32;
+using System.Windows.Forms;
+using System.Drawing;
+using MouseButtons = InputManager.Mouse.MouseButtons;
 
 namespace Doppelganger.ViewModels
 {
@@ -60,11 +64,18 @@ namespace Doppelganger.ViewModels
         {
             _keyboardHook = new Hook.KeyboardHook(false);
             Items = new ObservableCollection<Macro>();
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
             StartRecordingCommand = new DelegateCommand(StartHooking);
             StopeRecordingCommand = new DelegateCommand(StopHooking);
 
             _mouseHook.MouseHookReceived += new MouseHookCallback(mouseHook_MouseWheel);
             _keyboardHook.KeyboardStatusChanged += _hook_KeyEvent;
+        }
+
+        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        {
+            Rectangle resolution = Screen.PrimaryScreen.Bounds;
+            Console.WriteLine(resolution.X + " " + resolution.Y + " " + resolution.Width + " " + resolution.Height);
         }
 
         private void MinimizeAll()

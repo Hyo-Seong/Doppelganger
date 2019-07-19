@@ -11,6 +11,13 @@ namespace Doppelganger.Models.Input
 {
     public class MouseInput : BindableBase, ICloneable
     {
+        private Resolution _resolution;
+        public Resolution Resolution
+        {
+            get => _resolution;
+            set => SetProperty(ref _resolution, value);
+        }
+
         private long _millis;
         public long Millis
         {
@@ -43,6 +50,7 @@ namespace Doppelganger.Models.Input
         {
             return new MouseInput
             {
+                Resolution = this.Resolution,
                 Millis = this.Millis,
                 MouseData = this.MouseData,
                 MouseStatus = this.MouseStatus,
