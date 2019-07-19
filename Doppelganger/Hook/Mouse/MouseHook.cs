@@ -52,7 +52,7 @@ namespace Doppelganger.Hook
         public delegate void MouseHookCallback(MouseInput mouseInput);
 
         #region Events
-        public event MouseHookCallback MouseHookReceived;
+        public event MouseHookCallback MouseStatusChanged;
         #endregion
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Doppelganger.Hook
                 };
 
                 stopwatch.Restart();
-                MouseHookReceived?.Invoke(mouseInput);
+                MouseStatusChanged?.Invoke(mouseInput);
             }
             return CallNextHookEx(hookID, nCode, wParam, lParam);
         }

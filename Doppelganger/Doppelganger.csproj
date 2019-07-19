@@ -75,6 +75,7 @@
     <Compile Include="Hook\Keyboard\Keys.cs" />
     <Compile Include="Hook\Mouse\MouseHook.cs" />
     <Compile Include="Hook\Keyboard\KeyboardHook.cs" />
+    <Compile Include="Models\Resolution.cs" />
     <Compile Include="ViewModels\MacroViewModel.cs" />
     <Compile Include="Views\RecordManager.xaml.cs">
       <DependentUpon>RecordManager.xaml</DependentUpon>

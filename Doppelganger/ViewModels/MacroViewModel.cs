@@ -39,6 +39,8 @@ namespace Doppelganger.ViewModels
         private readonly uint KEYDOWN = 0x1;
         private readonly uint KEYUP = 0x2;
 
+        private Resolution _desktopResolution = new Resolution();
+
         private MouseHook _mouseHook = new MouseHook();
 
         private Hook.KeyboardHook _keyboardHook = new Hook.KeyboardHook();
@@ -68,14 +70,18 @@ namespace Doppelganger.ViewModels
             StartRecordingCommand = new DelegateCommand(StartHooking);
             StopeRecordingCommand = new DelegateCommand(StopHooking);
 
-            _mouseHook.MouseHookReceived += new MouseHookCallback(mouseHook_MouseWheel);
-            _keyboardHook.KeyboardStatusChanged += _hook_KeyEvent;
+            _mouseHook.MouseStatusChanged += _hook_MouseEvent;
+            _keyboardHook.KeyboardStatusChanged += _hook_KeyboardEvent;
         }
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
-            Rectangle resolution = Screen.PrimaryScreen.Bounds;
-            Console.WriteLine(resolution.X + " " + resolution.Y + " " + resolution.Width + " " + resolution.Height);
+            SetResolution();
+        }
+
+        private void SetResolution()
+        {
+            _desktopResolution = Resolution.RectangleToResolution(Screen.PrimaryScreen.Bounds);
         }
 
         private void MinimizeAll()
@@ -96,7 +102,6 @@ namespace Doppelganger.ViewModels
 
             _mouseHook.StartHooking();
             _keyboardHook.StartHooking();
-            
         }
 
         private void StopHooking()
@@ -108,16 +113,14 @@ namespace Doppelganger.ViewModels
             _keyboardHook.StopHooking();
 
             Items.Add((Macro)macro.Clone());
-            macro = null;
         }
 
-
-        void mouseHook_MouseWheel(MouseInput mouseInput)
+        void _hook_MouseEvent(MouseInput mouseInput)
         {
             macro.MouseInputs.Add(mouseInput);
         }
 
-        private void _hook_KeyEvent(object sender, KeyboardInput e)
+        private void _hook_KeyboardEvent(object sender, KeyboardInput e)
         {
             macro.KeyboardInputs.Add(e);
         }
@@ -169,7 +172,7 @@ namespace Doppelganger.ViewModels
             }
             else if(mouseInput.MouseStatus == 0)
             {
-                MovePosition(mouseInput.Point);
+                MovePosition(Resolution.ChangeResolution(mouseInput.Resolution, _desktopResolution, mouseInput.Point));
             } else
             {
                 Mouse.SendButton(mouseInput.MouseStatus);
@@ -192,6 +195,7 @@ namespace Doppelganger.ViewModels
 
         private void MovePosition(InputManager.MouseHook.POINT point)
         {
+            // TODO - hyoseong : 여기서 확인 한번 해야함(해상도)
             Mouse.Move(point.x, point.y);
         }
 
