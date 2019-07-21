@@ -29,6 +29,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Doppelganger.Models.Input;
 using static InputManager.Mouse;
+using Doppelganger.ViewModels;
 
 namespace Doppelganger.Hook
 {   
@@ -120,6 +121,7 @@ namespace Doppelganger.Hook
                 MSLLHOOKSTRUCT mSLLHOOKSTRUCT = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
                 MouseInput mouseInput = new MouseInput
                 {
+                    Resolution = MacroViewModel.DesktopResolution,
                     Point = new InputManager.MouseHook.POINT
                     {
                         x = mSLLHOOKSTRUCT.pt.x,

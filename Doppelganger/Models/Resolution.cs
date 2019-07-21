@@ -51,15 +51,16 @@ namespace Doppelganger.Models
             };
         }
 
-        public static POINT ChangeResolution(Resolution res1, Resolution res2, POINT point)
+        public static POINT ChangeResolution(Resolution desktopResolution, Resolution inputResolution, POINT point)
         {
-            if(!CheckResolution(res1, res2))
+            if(!CheckResolution(desktopResolution, inputResolution))
             {
-                return new POINT
+                POINT point2 = new POINT
                 {
-                    x = AA(res1.Width, res2.Width, point.x),
-                    y = AA(res1.Width, res2.Width, point.y)
+                    x = AA(desktopResolution.Width, inputResolution.Width, point.x),
+                    y = AA(desktopResolution.Width, inputResolution.Width, point.y)
                 };
+                Console.WriteLine("[" + inputResolution.Width + "," + inputResolution.Height + "] " + point.x + " " + point.y + " -> " + point2.x + " " + point2.y);
             }
             return point;
         }
@@ -76,6 +77,11 @@ namespace Doppelganger.Models
                 Height = this.Height,
                 Width = this.Width
             };
+        }
+
+        internal static Resolution GetDesktopResolution()
+        {
+            return RectangleToResolution(Screen.PrimaryScreen.Bounds);
         }
     }
 }

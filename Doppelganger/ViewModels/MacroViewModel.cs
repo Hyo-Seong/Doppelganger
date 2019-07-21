@@ -39,7 +39,7 @@ namespace Doppelganger.ViewModels
         private readonly uint KEYDOWN = 0x1;
         private readonly uint KEYUP = 0x2;
 
-        private Resolution _desktopResolution = new Resolution();
+        public static Resolution DesktopResolution = new Resolution();
 
         private MouseHook _mouseHook = new MouseHook();
 
@@ -81,7 +81,7 @@ namespace Doppelganger.ViewModels
 
         private void SetResolution()
         {
-            _desktopResolution = Resolution.RectangleToResolution(Screen.PrimaryScreen.Bounds);
+            DesktopResolution = Resolution.GetDesktopResolution();
         }
 
         private void MinimizeAll()
@@ -100,7 +100,7 @@ namespace Doppelganger.ViewModels
             _mouseHook.StartStopwatch();
             _keyboardHook.StartStopwatch();
 
-            _mouseHook.StartHooking();
+            _mouseHook.StartHooking(); 
             _keyboardHook.StartHooking();
         }
 
@@ -172,7 +172,7 @@ namespace Doppelganger.ViewModels
             }
             else if(mouseInput.MouseStatus == 0)
             {
-                MovePosition(Resolution.ChangeResolution(mouseInput.Resolution, _desktopResolution, mouseInput.Point));
+                MovePosition(Resolution.ChangeResolution(DesktopResolution, mouseInput.Resolution, mouseInput.Point));
             } else
             {
                 Mouse.SendButton(mouseInput.MouseStatus);
