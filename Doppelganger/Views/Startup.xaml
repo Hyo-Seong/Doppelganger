@@ -7,6 +7,14 @@
         xmlns:local="clr-namespace:Doppelganger.Views"
         mc:Ignorable="d"
         Title="Startup" Height="500" Width="700">
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding StartRecordingCommand}"
+              Gesture="F6"
+              HotkeyManager.RegisterGlobalHotkey="True" />
+        <KeyBinding Command="{Binding StopRecordingCommand}"
+              Gesture="F7" 
+              HotkeyManager.RegisterGlobalHotkey="True" />
+    </Window.InputBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="7*"/>
@@ -33,7 +41,7 @@
             <StackPanel Margin="10">
                 <Button Content="불러오기" Margin="5" Click="Button_Click"/>
                 <Button Content="새로만들기" Margin="5" Command="{Binding StartRecordingCommand}"/>
-                <Button Content="정지" Margin="5" Command="{Binding StopeRecordingCommand}"/>
+                <Button Content="정지" Margin="5" Command="{Binding StopRecordingCommand}"/>
             </StackPanel>
         </Grid>
     </Grid>

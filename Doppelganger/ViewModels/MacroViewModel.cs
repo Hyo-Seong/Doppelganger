@@ -30,6 +30,13 @@ namespace Doppelganger.ViewModels
         #region DllImport
         [DllImport("user32.dll")]
         static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+
+        [DllImport("user32.dll")]
+        private static extern int RegisterHotKey(int hwnd, int id, int fsModifiers, int vk);
+
+        [DllImport("user32.dll")]
+        private static extern int UnregisterHotKey(int hwnd, int id);
+
         #endregion
 
         #region 
@@ -57,7 +64,7 @@ namespace Doppelganger.ViewModels
 
         #region Command
         public DelegateCommand StartRecordingCommand { get; private set; }
-        public DelegateCommand StopeRecordingCommand { get; private set; }
+        public DelegateCommand StopRecordingCommand { get; private set; }
 
 
         #endregion
@@ -68,7 +75,7 @@ namespace Doppelganger.ViewModels
             Items = new ObservableCollection<Macro>();
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
             StartRecordingCommand = new DelegateCommand(StartHooking);
-            StopeRecordingCommand = new DelegateCommand(StopHooking);
+            StopRecordingCommand = new DelegateCommand(StopHooking);
 
             _mouseHook.MouseStatusChanged += _hook_MouseEvent;
             _keyboardHook.KeyboardStatusChanged += _hook_KeyboardEvent;
